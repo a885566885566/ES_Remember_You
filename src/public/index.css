@@ -1,111 +1,100 @@
-body, select{
+body, div{
     background-color:#393E46;
     font-family:Microsoft JhengHei;
-}
-div{
-    margin:10px 10px 10px 10px;
-    padding:10px;
+    font-size:3vw;
+    margin: auto;
     color:#AAAAAA;
+    transition-duration: 0.4s;
 }
-h1{
-    font-size:5em;
-    margin: 0;
+p, option, .circle{
+    display:inline-block;
+    padding:0;
+    margin:0;
 }
-.header{
-    padding:50px;
-    color:#EEEEEE;
-    text-align:center;
+.div_question, .purchase_item{
+    position:relative;
 }
-.dot_border{
-    padding:30px;
-    border-style:dotted;
-    border-width:5px;
-    border-color: #748695;
-    border-radius:50px;
+.div_question label, select, option, input{
+    font-size:3vw;
 }
 .circle{
-    height:30px;
-    width:30px;
+    position:absolute;
+    right:-10px;
+    top:-10px;
+    height:6vw;
+    width:6vw;
+    font-size:2vw;
     background-color:#222222;
     border-radius:50px;
 }
-.row .label{
-    font-size:4em;
-}
-.row button, select, input, span{
-    float: right;
-}
-.row .label{
-    display:inline;
-    text-align:left; 
-}
 select, input{
-    padding:12px;
+    position:absolute;
+    right:0;
+    bottom:0;
     background-color:#0563af;
     color:white;
-    font-size:3em;
-    width:7em;
+    width:50%;
+    height:100%;
     border:none;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-    appearance:button;
-}
-input{
-    width:2em;
-}
-option{
-    height:1em;
-    font-size:0.3em;
 }
 button{
-    display:inline;
-    margin: 20px;
-    padding: 10px 30px 10px 30px;
+    display:block;
+    margin: auto;
+    margin-top:10px;
+    width:30%;
+    padding: 10px 0 10px 0;
     color: rgb(150, 150, 150);
     background-color: rgb(30, 30, 30);
-    font-size: 3em;
+    font-size: 3vw;
     font-weight:bold;
     text-align: center;
     border-width:0;
     border-radius: 10px;
     transition-duration: 0.4s;
 }
-.show_board{
-    padding:50px;
+.purchase_item{
+    margin-top:10px;
+    max-height:300px;
+    transition: max-height 1s;
 }
-.show_board span{
+.main_container{
+    width:80%;
+}
+.info_header{
+    font-size:5vw;
+}
+.about_delete{
+    overflow:hidden;
+    max-height: 0;
+}
+/* Responsive Web*/
+@media (min-width: 600px) {
+    .main_container{
+        width:400px;
+    }
+    .info_header{
+        font-size:30px;
+    }
+    .div_question label, select, option, input{
+        font-size:20px;
+    }
+}
+.slim_border{
+    padding:1% 10% 1% 10%;
+    border-style:solid;
+    border-width:2px;
+    border-color: #748695;
+    border-radius:20px;
+}
+.bottom_line{
+    padding-bottom:2px;
+    border-style:solid;
+    border-width:0 0 1px 0;
+    border-color:#AAAAAA;
+}
+#price_tag{
+    width:70%;
+    margin:auto;
     text-align:center;
-    height:100%;
-    margin-right:30px;
-    float:left;
 }
-.tag{
-    padding:5px;
-    position:absolute;
-    left:50%;
-}
-.tag p{
-    margin-top:5px;
-    margin-bottom:5px;
-    text-align:left;
-    font-size:1.5em;
-}
-.result{
-    height:5em;
-}
-#btn_submit{
-    width: 10em;
-}
-#btn_add{
-    width: 2em;
-}
-#in_name{
-    width: 50%;
-}
-#info{
-    font-size:2em;
-    color:#FF3333;
-}
-.invisible{
-    display:none;
-}
-
