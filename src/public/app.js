@@ -1,5 +1,12 @@
+var productPrice = {
+    "productA":70,
+    "productB":50,
+    "productC":100,
+}
+
+
 $(document).ready(function(){
-    purchaseCounter = 0
+    var purchaseCounter = 0
 
     /* 
      * Create new purchase block when add button clicked.
@@ -15,6 +22,7 @@ $(document).ready(function(){
             <select id="type">
             <option value="productA">Product A</option>
             <option value="productB">Product B</option>
+            <option value="productC">Product C</option>
             </select>
             </div>
             <div class="div_question">
@@ -35,8 +43,9 @@ $(document).ready(function(){
             <button class="circle" id="btn_close${purchaseCounter}">X</button>
             </div>`)
         $("#purchase_list").append(newBlock)
+        calculatePrice()
 
-        /* Add click event listener after each new btn was created */
+        /* Add click event listener after each new btn was created. */
         $(`#btn_close${purchaseCounter}`).click((e)=>{
             $(e.target).hide()
             $(e.target).parent().addClass("about_delete")
@@ -44,7 +53,79 @@ $(document).ready(function(){
                 $(e.target).parent().remove()
             }, 1000)
         })
+
+        /* Add price change event listener. */
+        $(newBlock).find("#type").change(()=>{
+            calculatePrice()
+        })
         purchaseCounter++
+    })
+
+    function getInputValue(value){
+        if(value.indexOf('<') >= 0 ||
+            value.indexOf('>') >= 0 ||
+            value.indexOf('(') >= 0 ||
+            value.indexOf(')') >= 0 ||
+            value.indexOf('.') >= 0 ||
+            value.indexOf(',') >= 0){
+            alert("Warning ! Input format error!")
+            return false
+        }
+        return value
+    }
+
+    /*
+     * Calculate total price accordign to discount rule, and return
+     * actual price.
+     */
+    function calculatePrice(){
+        var totalPrice = 0
+        var children = $("#purchase_list").children()
+        $.each(children, (idx, child)=>{
+            var id = $(child).attr("id")
+            var product_type = $(child).find("#type").val()
+            totalPrice += productPrice[product_type]
+        })
+
+        /* discount rule */
+        if( totalPrice > 250 ) totalPrice -= 20
+        else if(totalPrice > 150 ) totalPrice -= 10
+
+        $("#price_tag").text(totalPrice)
+        return totalPrice
+    }
+
+    /* Order submit */
+    $("#btn_submit").click(()=>{
+        var price = calculatePrice()
+
+        /* Create order list */
+        //var buyerInfo = getBuyerInfo()
+        var orderList = []
+        var children = $("#purchase_list").children()
+
+        var inputCheck = true;
+        $.each(children, (idx, child)=>{
+            var destName = getInputValue($(child).find("#dest_name").val())
+            if (destName === false) inputCheck = false
+
+            var order = {
+                "ProductType": $(child).find("#type").val(),
+                "ProductSpec": $(child).find("#spec").val(),
+                "DestName": destName
+            }
+
+            orderList.push(order)
+        })
+        if(inputCheck === false){
+            alert("Please check your input again!")
+        }
+        else{
+            $.get("./order", JSON.stringify(orderList), (data)=>{
+                console.log(data)
+            })
+        }
+        console.log(orderList)
     })
 })
 
