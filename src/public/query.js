@@ -1,4 +1,10 @@
 $(document).ready(function() {    
+    var productObj = {}
+
+    $.getJSON("./initial", (data)=>{
+        productObj = data
+    })
+
     function genProductsBlock(products){
         var product_block = $(`<div></div>`)
         products.forEach((product)=>{
@@ -11,10 +17,16 @@ $(document).ready(function() {
              *      "Contact":     string,
              *      "Extra":       string
              */
+            var prodName = productObj[product["ProductType"]].name
+            var prodSpec =""
+            console.log(product["ProductSpec"])
+            product["ProductSpec"].forEach((spec, idx)=>{
+                prodSpec += productObj[product["ProductType"]].spec[idx].name + ": " + spec + "              "
+            })
             var block = $(`
                 <div>
-                <div class="info"><label>禮物種類</label><p>${product["ProductType"]}</p></div>
-                <div class="info"><label>禮物規格</label><p>${product["ProductSpec"]}</p></div>
+                <div class="info"><label>禮物種類</label><p>${prodName}</p></div>
+                <div class="info"><label>禮物規格</label><p>${prodSpec}</p></div>
                 <div class="info"><label>收件人</label><p>${product["DestName"]}</p></div>
                 <div class="info"><label>系級</label><p>${product["Department"]}</p></div>
                 <div class="info"><label>臉書主業</label><p>${product["Contact"]}</p></div>
@@ -22,8 +34,8 @@ $(document).ready(function() {
                 </div>
                 `)
             product_block.append(block)
-            return productPrice
         })
+        return product_block
     }
     function genOrdersBlock(personalOrderings){
         var uname = personalOrderings["Name"]
@@ -31,7 +43,7 @@ $(document).ready(function() {
         var phone = personalOrderings["Phone"]
         var orderInfo = personalOrderings["OrderInfo"]
         /*
-         * {
+         * "OrderInfo": {
          *      "Products": [Array],
          *      "Paid": true | false,
          *      "PaidTime": string,
@@ -85,7 +97,8 @@ $(document).ready(function() {
             }).done((result)=>{
                 console.log(result)
                 if(result.status !== "failed"){
-                    var summary_block = genOrdersBlock(result)
+                    var summary_block = genOrdersBlock(result.query)
+                    console.log(summary_block)
                     $("#query_result").empty()
                     $("#query_result").append(summary_block)
                 }
