@@ -3,13 +3,24 @@ body, div{
     font-family:Microsoft JhengHei;
     font-size:3vw;
     margin: auto;
+    margin-top:5px;
+    margin-bottom:5px;
     color:#AAAAAA;
     transition-duration: 0.4s;
 }
-p, option, .circle{
+p, option, .circle, h1, h2{
     display:inline-block;
     padding:0;
     margin:0;
+}
+h1, h2{
+    width:100%;
+    margin:auto;
+    text-align:center;
+}
+form{
+    margin-top:10%;
+    margin-bottom:10%;
 }
 .div_question, .purchase_item{
     position:relative;
@@ -55,7 +66,7 @@ button{
 }
 .purchase_item{
     margin-top:10px;
-    max-height:300px;
+    max-height:400px;
     transition: max-height 1s;
 }
 .main_container{
@@ -70,13 +81,21 @@ button{
 }
 /* Responsive Web*/
 @media (min-width: 600px) {
+    div{
+        font-size:40px;
+    }
     .main_container{
         width:400px;
     }
-    .info_header{
+    .info_header, button{
         font-size:30px;
     }
     .div_question label, select, option, input{
+        font-size:20px;
+    }
+    .circle{
+        height:40px;
+        width:40px;
         font-size:20px;
     }
 }

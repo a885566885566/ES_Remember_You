@@ -2,4 +2,6 @@
 *.lock
 node_modules
 src/order_list
-src/log
+notuse.js
+src/log/*
+src/private/keys.json

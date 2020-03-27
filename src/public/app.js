@@ -1,12 +1,10 @@
-var productPrice = {
-    "productA":70,
-    "productB":50,
-    "productC":100,
-}
-
+var productPrice = {}
 
 $(document).ready(function(){
     var purchaseCounter = 0
+    $.getJSON("./initial", (data)=>{
+        productPrice = data
+    })
 
     /* 
      * Create new purchase block when add button clicked.
@@ -51,6 +49,7 @@ $(document).ready(function(){
             $(e.target).parent().addClass("about_delete")
             setTimeout(()=>{
                 $(e.target).parent().remove()
+                calculatePrice()
             }, 1000)
         })
 
@@ -100,8 +99,7 @@ $(document).ready(function(){
         var price = calculatePrice()
 
         /* Create order list */
-        //var buyerInfo = getBuyerInfo()
-        var orderList = []
+                var orderList = []
         var children = $("#purchase_list").children()
 
         var inputCheck = true;
@@ -117,15 +115,32 @@ $(document).ready(function(){
 
             orderList.push(order)
         })
+        var summary = {
+            "testid":{
+                "Name":"Test",
+                "Sid":"E12345678",
+                "Phone":"0912345678",
+                "Products":orderList,
+                "Paid":false,
+                "PaidTime":"",
+                "BuyTIme":"",
+                "Cashier":"",
+                "Price":price
+            }
+        }
+
         if(inputCheck === false){
             alert("Please check your input again!")
         }
         else{
-            $.get("./order", JSON.stringify(orderList), (data)=>{
+            var url = "/order?str="+JSON.stringify(summary)
+            $.getJSON(url, (data)=>{
                 console.log(data)
+                if(data["Price"] != price)
+                    alert("Warning! Price calculation error")
             })
         }
-        console.log(orderList)
+        console.log(summary)
     })
 })
 
