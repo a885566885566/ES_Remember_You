@@ -66,7 +66,7 @@ button{
 }
 .purchase_item{
     margin-top:10px;
-    max-height:400px;
+    max-height:600px;
     transition: max-height 1s;
 }
 .main_container{

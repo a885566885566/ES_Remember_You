@@ -4,4 +4,4 @@ node_modules
 src/order_list
 notuse.js
 src/log/*
-src/private/keys.json
+src/private/*

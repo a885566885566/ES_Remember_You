@@ -11,7 +11,6 @@ const session = require('express-session');
 
 //const crypto = require('crypto')
 
-
 const fs = require("fs");
 
 //var bodyParser = require('body-parser');
@@ -29,17 +28,14 @@ const port = 11234;
 /* Order log file configuration */
 const OrderFilename = './log/order_list.json';
 const KeyFilename = './private/keys.json';
+const ProductFilename = './private/products.json'
 
 var orderStr = fs.readFileSync(OrderFilename);
 var orderObj = JSON.parse(orderStr);
 var keyStr = fs.readFileSync(KeyFilename);
 var keyObj = JSON.parse(keyStr);
-
-var productPrice = {
-    "productA":70,
-    "productB":50,
-    "productC":100,
-}
+var productStr = fs.readFileSync(ProductFilename);
+var productObj = JSON.parse(productStr);
 
 app.use(express.static(__dirname + '/public'))
 
@@ -68,7 +64,7 @@ function calculatePrice(products){
     var totalPrice = 0
     products.forEach((product)=>{
         var product_type = product["ProductType"]
-        totalPrice += productPrice[product_type]
+        totalPrice += productObj[product_type].price
     })
 
     /* discount rule */
@@ -79,27 +75,31 @@ function calculatePrice(products){
 }
 
 app.get("/initial", (req, res)=>{
-    res.send(productPrice)
+    res.send(productObj)
 })
 app.get("/order", (req, res)=>{
     var new_order = JSON.parse(req.query.str)
+    var hid = req.query.id
 
-    var hid = Object.keys(new_order)[0]
-    var products = new_order[hid]["Products"]
-
+    console.log("id= " + hid )
+    console.log("summary= " + new_order )
+    var newOrderInfo = new_order[hid].OrderInfo[0]
+    var products = newOrderInfo["Products"]
     var price = calculatePrice(products)
     /* Save result */
-    if(price === new_order["Price"]){
+    /* Check if the price is currect */
+    if(price === newOrderInfo["Price"]){
+        // Somebody already has record
         if(orderObj[hid] !== undefined){
-            orderObj[hid].push(new_order[hid])
-            console.log(orderObj)
+            orderObj[hid]["OrderInfo"].push(newOrderInfo)
         }
+        // New user
         else
-            orderObj[hid] = new_order
+            orderObj[hid] = new_order[hid]
     }
-    new_order["Price"] = price
+    new_order[hid].OrderInfo[0]["Price"] = price
     console.log(orderObj)
-    res.send(new_order)
+    res.send(orderObj)
 })
 
 app.get("/query", (req, res)=>{
