@@ -105,11 +105,19 @@ app.get("/order", (req, res)=>{
 app.get("/query", (req, res)=>{
     var hid = req.query.hid
     var msg = `Query request from ${hid}`
+    var result = {}
+    if( req.session.uname )    result["status"] = "login"
+    else result["status"] = "normal"
+    
     console.log(msg)
-    if( orderObj[hid] !== undefined )
-        res.send(orderObj[hid])
-    else
-        res.send({"status":"no"})
+    if( orderObj[hid] !== undefined ){
+        result["query"] = orderObj[hid]
+        res.send(result)
+    }
+    else{
+        result["status"] = "failed"
+        res.send(result)
+    }
 })
 
 function checkAccount(uname, pswd){

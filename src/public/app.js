@@ -99,7 +99,7 @@ $(document).ready(function(){
         var price = calculatePrice()
 
         /* Create order list */
-                var orderList = []
+        var orderList = []
         var children = $("#purchase_list").children()
 
         var inputCheck = true;
@@ -110,7 +110,10 @@ $(document).ready(function(){
             var order = {
                 "ProductType": $(child).find("#type").val(),
                 "ProductSpec": $(child).find("#spec").val(),
-                "DestName": destName
+                "DestName": destName,
+                "Department": $(child).find("#dept").val(),
+                "Contact": $(child).find("#cont").val(),
+                "Extra": $(child).find("#etc").val()
             }
 
             orderList.push(order)
@@ -120,12 +123,14 @@ $(document).ready(function(){
                 "Name":"Test",
                 "Sid":"E12345678",
                 "Phone":"0912345678",
-                "Products":orderList,
-                "Paid":false,
-                "PaidTime":"",
-                "BuyTIme":"",
-                "Cashier":"",
-                "Price":price
+                "OrderInfo":{
+                    "Products":orderList,
+                    "Paid":false,
+                    "PaidTime":"",
+                    "BuyTIme":"",
+                    "Cashier":"",
+                    "Price":price
+                }
             }
         }
 
