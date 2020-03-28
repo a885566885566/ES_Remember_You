@@ -47,7 +47,7 @@ form{
 }
 .circle{
     position:absolute;
-    right:-10px;
+    right:-10px;v
     top:-10px;
     height:6vw;
     width:6vw;
@@ -92,6 +92,9 @@ button{
     border-width:0;
     border-radius: 10px;
     transition-duration: 0.4s;
+}
+.header{
+    font-family:Arial;
 }
 .purchase_item{
     margin-top:10px;
@@ -144,6 +147,9 @@ button{
     border-style:solid;
     border-width:0 0 1px 0;
     border-color:#AAAAAA;
+}
+.Basic_information{
+    margin:10px 0px 10px 0px;
 }
 #price_tag{
     width:70%;
