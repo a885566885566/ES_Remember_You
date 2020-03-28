@@ -116,6 +116,11 @@ $(document).ready(function(){
         return totalPrice
     }
 
+    function resetOrderList(){
+        $("#purchase_list").empty()
+        calculatePrice()
+    }
+
     /* Order submit */
     $("#btn_submit").click(()=>{
         var price = calculatePrice()
@@ -175,9 +180,10 @@ $(document).ready(function(){
                 console.log(data)
                 if(data[hid].OrderInfo[0]["Price"] != price)
                     alert("Warning! Price calculation error")
+                
+                resetOrderList()
             })
         }
-        console.log(summary)
     })
 })
 

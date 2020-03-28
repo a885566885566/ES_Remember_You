@@ -96,10 +96,12 @@ app.get("/order", (req, res)=>{
         // New user
         else
             orderObj[hid] = new_order[hid]
+        orderObj[hid]["OrderInfo"][orderObj[hid]["OrderInfo"].length-1].BuyTime = new Date().getTime()
     }
     new_order[hid].OrderInfo[0]["Price"] = price
     console.log(orderObj)
-    res.send(orderObj)
+    saveLogFile()
+    res.send(new_order)
 })
 
 app.get("/query", (req, res)=>{
@@ -154,5 +156,30 @@ app.get("/login", (req, res)=>{
     }
 })
 
+app.get("/paid_request", (req, res)=>{
+    var response = {}
+    if(req.session.uname === undefined){
+        response.status = "permission_deny"
+    }
+    else{
+        const hid = req.query.hid
+        const prod_id = req.query.id
+        orderObj[hid].OrderInfo.forEach((prod, idx)=>{
+            console.log(prod.BuyTime)
+            console.log(prod_id)
+            console.log(prod.Paid)
+            if((prod.BuyTime == prod_id) && (prod.Paid === false)){
+                orderObj[hid].OrderInfo[idx].Paid = true
+                orderObj[hid].OrderInfo[idx].PaidTime = new Date().getTime()
+                orderObj[hid].OrderInfo[idx].Cashier = req.session.uname
+                response.status = "status_updated"
+            }
+            else
+                response.status = "info_error"
+        })
+    }
+    saveLogFile()
+    res.send(response)
+})
 console.log("Prepare done");
 app.listen(port)

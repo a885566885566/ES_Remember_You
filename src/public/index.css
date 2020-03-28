@@ -1,19 +1,23 @@
-body, div{
+html{
     background-color:#393E46;
+}
+*{
     font-family:Microsoft JhengHei;
+    transition-duration: 0.4s;
+}
+body, div{
     font-size:3vw;
     margin: auto;
     margin-top:5px;
     margin-bottom:5px;
     color:#AAAAAA;
-    transition-duration: 0.4s;
 }
 p, option, .circle, h1, h2{
     display:inline-block;
     padding:0;
     margin:0;
 }
-h1, h2{
+h1, h2, .div_center{
     width:100%;
     margin:auto;
     text-align:center;
@@ -25,8 +29,21 @@ form{
 .div_question, .purchase_item{
     position:relative;
 }
-.div_question label, select, option, input{
+.right_float div:not(.div_center){
+    position:relative;
+}
+.narrow div{
+    width: 80%;
+}
+.content_small label, .content_small p:not(.star_info){
+    font-size:2vw;
+}
+.content_medium label, .content_medium p{
     font-size:3vw;
+}
+.div_question label, .div_question select, .div_question option, .div_question input{
+    font-size:3vw;
+    text-align:center;
 }
 .circle{
     position:absolute;
@@ -38,6 +55,17 @@ form{
     background-color:#222222;
     border-radius:50px;
 }
+.right_float p{
+    position:absolute;
+    right:0;
+    bottom:0;
+}
+.abs_right{
+    /*position:absolute;
+    right:0;
+    top:0;*/
+    float:right;
+}
 select, input{
     position:absolute;
     right:0;
@@ -45,9 +73,10 @@ select, input{
     background-color:#0563af;
     color:white;
     width:50%;
-    height:100%;
+    height:80%;
     border:none;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    text-align:center;
 }
 button{
     display:block;
@@ -66,7 +95,7 @@ button{
 }
 .purchase_item{
     margin-top:10px;
-    max-height:600px;
+    max-height:1000px;
     transition: max-height 1s;
 }
 .main_container{
@@ -81,16 +110,20 @@ button{
 }
 /* Responsive Web*/
 @media (min-width: 600px) {
-    div{
+    .div_question *{
+        height:80%;
+    }
+    label, select, option, input{
         font-size:40px;
+        text-align:center;
     }
     .main_container{
-        width:400px;
+        width:600px;
     }
     .info_header, button{
         font-size:30px;
     }
-    .div_question label, select, option, input{
+    .div_question label, .div_question select, .div_question option, .div_question input{
         font-size:20px;
     }
     .circle{
@@ -116,4 +149,40 @@ button{
     width:70%;
     margin:auto;
     text-align:center;
+}
+.left_border_2vw{
+    border-width:0 0 0 2vw;
+    border-style:solid;
+    padding-left:1vw;
+    padding-right:3vw;
+    margin-bottom:1vw;
+}
+.border_brown{
+    border-color:#444444;
+}
+.border_blue{
+    border-color:#444466;
+}
+.highlight{
+    background-color:#444466;
+    padding-top:1vw;
+    padding-bottom:1vw;
+    text-align:center;
+}
+.state_warning{
+    color:#FF3333;
+}
+.state_great{
+    color:#33FF33;
+}
+.fine{
+    display:none;
+}
+.wid-70{
+    display:inline-block;
+    width:70%;
+}
+.wid-30{
+    display:inline-block;
+    width:30%;
 }
