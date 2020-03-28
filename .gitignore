@@ -1,5 +1,9 @@
 *.swp
 *.lock
+*.swn
+*.swo
+*.DS_Store
 node_modules
+img
 src/order_list
 src/log

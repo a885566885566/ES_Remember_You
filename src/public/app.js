@@ -129,3 +129,9 @@ $(document).ready(function(){
     })
 })
 
+function productIntro(){
+    var block = $(`
+        <></>
+        `)
+    $("#Acontain_info")
+}
