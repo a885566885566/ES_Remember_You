@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ES Remember You Query Form</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="index.css">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+        <script src="core.js"></script>
+        <script src="query.js"></script>
+    </head>
+    <body>
+        <div class="main_container">
+            <h1>工科傳情</h1>
+            <h2>資料查詢</h2>
+            <form class="right_float" id="login_form" onsubmit="return false" >
+                <div>
+                    <label for="sid">學號</label>
+                    <input type="text "id="sid" placeholder="輸入學號"></input>
+                </div>
+                <div>
+                    <label for="uname">姓名</label>
+                    <input type="text" id="uname" placeholder="輸入姓名"></input>
+                </div>
+                <button id="submit">Submit</button>
+            </form>
+            <div id="query_result">
+            </div>
+        </div>
+    </body>
+</html>

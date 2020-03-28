@@ -1,0 +1,24 @@
+{
+    "productA":{
+        "name":"",
+        "price":0,
+        "spec":[
+            {"name":"", "detail":["", ""]},
+            {"name":"", "detail":["", "", "", "", "", "", ""]}
+        ]
+    },
+    "productB":{
+        "name":"",
+        "price":0,
+        "spec":[
+            {"name":"", "detail":["", ""]}
+        ]
+    },
+    "productC":{
+        "name":"",
+        "price":0,
+        "spec":[
+            {"name":"", "detail":["", ""]}
+        ]
+    }
+}

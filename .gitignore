@@ -6,4 +6,8 @@
 node_modules
 img
 src/order_list
-src/log
+notuse.js
+src/log/*
+!src/log/*.default.json
+src/private/*
+!src/private/*.default.json
