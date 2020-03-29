@@ -58,7 +58,7 @@ $(document).ready(function() {
         return product_block
     }
 
-    function genOrdersBlock(personalOrderings, hid){
+    function genOrdersBlock(personalOrderings, hid, valid){
         var uname = personalOrderings["Name"]
         var sid = personalOrderings["Sid"]
         var phone = personalOrderings["Phone"]
@@ -113,11 +113,11 @@ $(document).ready(function() {
                     <p class="state_warning">尚未付款</p></div>
                     </div>
                     `)
-                var btnid = order["BuyTime"]
-                var btn = $(`<button class="wid-30 abs_right" 
-                    value=${btnid} id=${btnid}>確認繳費</button>`)
-                order_block.append(btn)
-
+                if(valid){
+                    var btnid = order["BuyTime"]
+                    var btn = $(`<button class="wid-30 abs_right" value=${btnid} id=${btnid}>確認繳費</button>`)
+                    order_block.append(btn)
+                }
                 $(btn).click((e)=>{
                     const paid_id = $(e.target).attr("value")
                     $.get(`/paid_request?id=${paid_id}&hid=${hid}`, (data)=>{
@@ -141,13 +141,15 @@ $(document).ready(function() {
         var sid = getInputValue($("#sid").val())
         var uname = getInputValue($("#uname").val())
         if (sid !== false && uname !== false){
-            const hid = sid + uname
+            const hid = md5(sid + uname)
             $.get("/query", {
                 "hid":hid
             }).done((result)=>{
                 console.log(result)
                 if(result.status !== "failed"){
-                    var summary_block = genOrdersBlock(result.query, hid)
+                    var valid = false
+                    if(result.status === "login") valid = true
+                    var summary_block = genOrdersBlock(result.query, hid, valid)
                     console.log(summary_block)
                     $("#query_result").empty()
                     $("#query_result").append(summary_block)

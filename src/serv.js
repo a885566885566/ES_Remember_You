@@ -18,15 +18,10 @@ const fs = require("fs");
 //app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({extended : false}));
 
-app.use(session({
-      secret: 'recommand 128 bytes random string', 
-      cookie: { "sid": 60 * 1000 }
-}));
-
 const port = 11234;
 
 /* Order log file configuration */
-const OrderFilename = './log/order_list.json';
+const OrderFilename = './order_list/order_list.json';
 const KeyFilename = './private/keys.json';
 const ProductFilename = './private/products.json'
 
@@ -37,10 +32,16 @@ var keyObj = JSON.parse(keyStr);
 var productStr = fs.readFileSync(ProductFilename);
 var productObj = JSON.parse(productStr);
 
+app.use(session({
+    secret: keyObj.session_key, 
+    cookie: { "sid": 0 }
+}));
+
 app.use(express.static(__dirname + '/public'))
 
 function saveLogFile(){
     var content = JSON.stringify(orderObj)
+    console.log("Log saved")
     fs.writeFile(OrderFilename, content, 'utf8', (err)=>{
         if (err)
             console.log("Error to write file")
@@ -48,13 +49,15 @@ function saveLogFile(){
 }
 
 function getInputValue(value){
-    if(value.indexOf('<') >= 0 ||
+    if( value === undefined ||
+        value == null ||
+        value.length <= 0 ||
+        value.indexOf('<') >= 0 ||
         value.indexOf('>') >= 0 ||
         value.indexOf('(') >= 0 ||
         value.indexOf(')') >= 0 ||
-        value.indexOf('.') >= 0 ||
+        value.indexOf(' ') >= 0 ||
         value.indexOf(',') >= 0){
-        alert("Warning ! Input format error!")
         return false
     }
     return value
@@ -81,24 +84,25 @@ app.get("/order", (req, res)=>{
     var new_order = JSON.parse(req.query.str)
     var hid = req.query.id
 
+    console.log("Get new order:")
     console.log("id= " + hid )
-    console.log("summary= " + new_order )
-    var newOrderInfo = new_order[hid].OrderInfo[0]
-    var products = newOrderInfo["Products"]
-    var price = calculatePrice(products)
+    console.log("new_order")
+    console.log(new_order)
+    var price = calculatePrice(new_order.OrderInfo[0].Products)
     /* Save result */
     /* Check if the price is currect */
-    if(price === newOrderInfo["Price"]){
+    new_order.OrderInfo[0].BuyTime = new Date().getTime()
+    const orderInfo = new_order.OrderInfo[0]
+    if(price == orderInfo["Price"]){
         // Somebody already has record
         if(orderObj[hid] !== undefined){
-            orderObj[hid]["OrderInfo"].push(newOrderInfo)
+            orderObj[hid]["OrderInfo"].push(orderInfo)
         }
         // New user
         else
-            orderObj[hid] = new_order[hid]
-        orderObj[hid]["OrderInfo"][orderObj[hid]["OrderInfo"].length-1].BuyTime = new Date().getTime()
+            orderObj[hid] = new_order
     }
-    new_order[hid].OrderInfo[0]["Price"] = price
+    new_order.OrderInfo[0]["Price"] = price
     console.log(orderObj)
     saveLogFile()
     res.send(new_order)
@@ -110,7 +114,7 @@ app.get("/query", (req, res)=>{
     var result = {}
     if( req.session.uname )    result["status"] = "login"
     else result["status"] = "normal"
-    
+
     console.log(msg)
     if( orderObj[hid] !== undefined ){
         result["query"] = orderObj[hid]
@@ -135,25 +139,42 @@ function checkAccount(uname, pswd){
 }
 
 app.get("/login", (req, res)=>{
-    if(req.session.uname === undefined){
+    var result = {}
+    if(req.query.mode === undefined){
+        console.log("Undefined")
+        result.status = "Failed"
+    }
+    else if(req.query.mode == "test"){
+        if( req.session.uname === undefined )
+            result.status = "Failed"
+        else{ 
+            result.status = "Success"
+            result.uname = req.session.uname
+        }
+    }
+    else if(req.query.mode == "login"){
         var uname = req.query.uname 
         var pswd = req.query.pswd
         var msg = "LOGIN: " + uname +", pswd= " + pswd
         if( checkAccount(uname, pswd) === true ){
             msg += " SUCCESSED"
             req.session.uname = uname
-            res.send({"status":"success"})
+            result.status = "Success"
+            result.uname = req.session.uname
         }
         else{
             msg += " FAILED"
-            res.send({"status":"fail"})
+            result.status = "Failed"
         }
         console.log(msg)
     }
-    else{
-        console.log(req.session.uname + "Already login")
-        res.send({"status":"already"})
+    else if(req.query.mode == "logout"){
+        result.status = "Failed"
+        req.session.destroy((err)=>{
+            console.log(err)
+        })
     }
+    res.send(result)
 })
 
 app.get("/paid_request", (req, res)=>{
