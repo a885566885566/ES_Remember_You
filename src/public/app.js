@@ -61,7 +61,7 @@ $(document).ready(function(){
             <label for="contact">臉書主頁</label>
             <input id="contact"></input>
             </div>
-            
+
             <div class="div_question">
             <label for="extra">其他聯絡方式</label>
             <input id="extra"></input>
@@ -180,16 +180,22 @@ $(document).ready(function(){
                 console.log(data)
                 if(data[hid].OrderInfo[0]["Price"] != price)
                     alert("Warning! Price calculation error")
-                
+
                 resetOrderList()
             })
         }
     })
 })
+function test(){
+    productObj.productA.spec.detail.forEach(spec,idx){
+        var id=`btn_productA_${spec``
+            var btn = $(`<button id="productpic"> </button>`)
 
-function productIntro(){
-    var block = $(`
-        <></>
-        `)
-    $("#Acontain_info")
-}
+            $(btn).click((){
+                var specP=<img src=“img/productA/flowercolor” >
+                $(.circuit_board)
+                
+              }
+        }
+    }
+
