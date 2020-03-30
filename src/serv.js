@@ -24,6 +24,8 @@ const port = 11234;
 const OrderFilename = './order_list/order_list.json';
 const KeyFilename = './private/keys.json';
 const ProductFilename = './private/products.json'
+const LoginLogFilename = './log/login_log.txt'
+const OrderLogFilename = './log/order_log.txt'
 
 var orderStr = fs.readFileSync(OrderFilename);
 var orderObj = JSON.parse(orderStr);
@@ -48,6 +50,18 @@ function saveLogFile(){
     })
 }
 
+function writeLoginLog(msg){
+    fs.appendFile(LoginLogFilename, msg+"\n", function (err) {
+        if (err) throw err;
+        console.log("LOGIN: " + msg)
+    })
+}
+function writeOrderLog(msg){
+    fs.appendFile(OrderLogFilename, msg+"\n", function (err) {
+        if (err) throw err;
+        console.log("ORDER: " + msg)
+    })
+}
 function getInputValue(value){
     if( value === undefined ||
         value == null ||
@@ -102,9 +116,11 @@ app.get("/order", (req, res)=>{
         else
             orderObj[hid] = new_order
     }
+    if(new_order.OrderInfo[0]["Price"] != price)
+        writeOrderLog(`PRICE_ERR: hid=${hid}, name=${new_order.Name}, real_price=${price}, user_price=${new_order.OrderInfo[0]["Price"]}`)
     new_order.OrderInfo[0]["Price"] = price
-    console.log(orderObj)
     saveLogFile()
+    writeOrderLog(`hid=${hid}, name=${new_order.Name}, id=${new_order.Sid}`)
     res.send(new_order)
 })
 
@@ -124,6 +140,7 @@ app.get("/query", (req, res)=>{
         result["status"] = "failed"
         res.send(result)
     }
+    writeOrderLog(`QUERY: hid=${hid}, result=${result.status}`)
 })
 
 function checkAccount(uname, pswd){
@@ -155,7 +172,7 @@ app.get("/login", (req, res)=>{
     else if(req.query.mode == "login"){
         var uname = req.query.uname 
         var pswd = req.query.pswd
-        var msg = "LOGIN: " + uname +", pswd= " + pswd
+        var msg = "uname=" + uname +", pswd= " + pswd
         if( checkAccount(uname, pswd) === true ){
             msg += " SUCCESSED"
             req.session.uname = uname
@@ -166,10 +183,11 @@ app.get("/login", (req, res)=>{
             msg += " FAILED"
             result.status = "Failed"
         }
-        console.log(msg)
+        writeLoginLog(msg)
     }
     else if(req.query.mode == "logout"){
         result.status = "Failed"
+        writeLoginLog(`uname=${req.session.uname} LOGOUT`)
         req.session.destroy((err)=>{
             console.log(err)
         })
@@ -179,16 +197,16 @@ app.get("/login", (req, res)=>{
 
 app.get("/paid_request", (req, res)=>{
     var response = {}
+    const hid = req.query.hid
+    const prod_id = req.query.id
     if(req.session.uname === undefined){
         response.status = "permission_deny"
     }
     else{
-        const hid = req.query.hid
-        const prod_id = req.query.id
         orderObj[hid].OrderInfo.forEach((prod, idx)=>{
-            console.log(prod.BuyTime)
-            console.log(prod_id)
-            console.log(prod.Paid)
+            //console.log(prod.BuyTime)
+            //console.log(prod_id)
+            //console.log(prod.Paid)
             if((prod.BuyTime == prod_id) && (prod.Paid === false)){
                 orderObj[hid].OrderInfo[idx].Paid = true
                 orderObj[hid].OrderInfo[idx].PaidTime = new Date().getTime()
@@ -200,6 +218,7 @@ app.get("/paid_request", (req, res)=>{
         })
     }
     saveLogFile()
+    writeOrderLog(`PAID_REQ: hid=${hid}, pid=${prod_id}, id=${req.session.uname} result=${response.status}`)
     res.send(response)
 })
 console.log("Prepare done");

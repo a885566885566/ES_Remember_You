@@ -47,9 +47,9 @@ $(document).ready(function() {
                 <label>fb連結</label>
                 <p>${product["Contact"]}</p></div>
 
-                <div>
+                <!--div>
                 <label>其他資訊</label>
-                <p>${product["Extra"]}</p></div>
+                <p>${product["Extra"]}</p></div-->
                 </div>
                 </div>
                 `)
@@ -81,10 +81,10 @@ $(document).ready(function() {
             var order_block = $(`
                 <div>
                 <div class="wid-70 narrow">
-                <div class="buy_time">
+                <div class="buy_time content_small">
                 <label>下單時間</label>
-                <p class="abs_right">${buyDate}</p>
-                <p class="abs_right">${buyTime}</p></div>
+                <p class="abs_right">${buyDate} </p>
+                <p class="abs_right">  ${buyTime}</p></div>
                 <div class="exp_price">
                 <label>應付金額</label>
                 <p class="abs_right">${order["Price"]}</p></div>

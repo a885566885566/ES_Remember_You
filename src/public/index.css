@@ -17,9 +17,12 @@ p, option, .circle, h1, h2{
     padding:0;
     margin:0;
 }
-h1, h2, .div_center{
+h1, h2, .div_center, img{
     width:100%;
     margin:auto;
+    text-align:center;
+}
+.header p{
     text-align:center;
 }
 form{
@@ -34,6 +37,10 @@ form{
 }
 .narrow div{
     width: 80%;
+}
+#spec_container form{
+    margin:auto;
+    height:100%;
 }
 .content_small label, .content_small p:not(.star_info){
     font-size:2vw;
@@ -66,7 +73,7 @@ form{
     top:0;*/
     float:right;
 }
-select, input{
+.main_container select, .main_container input{
     position:absolute;
     right:0;
     bottom:0;
@@ -101,6 +108,9 @@ button{
     max-height:1000px;
     transition: max-height 1s;
 }
+.prod_container{
+    width:90%;
+}
 .main_container{
     width:80%;
 }
@@ -111,6 +121,7 @@ button{
     overflow:hidden;
     max-height: 0;
 }
+
 /* Responsive Web*/
 @media (min-width: 600px) {
     .div_question *{
@@ -122,6 +133,9 @@ button{
     }
     .main_container{
         width:600px;
+    }
+    .product_container{
+        width:800px;
     }
     .info_header, button{
         font-size:30px;

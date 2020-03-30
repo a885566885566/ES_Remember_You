@@ -1,6 +1,6 @@
 $(document).ready(function() {    
     var request = "login"
-    function updateFrame(data){
+    function updateFrame(data, redir){
         if(data.status == "Success"){
             $("#try_login").hide()
             $("#already_login").show()
@@ -8,8 +8,12 @@ $(document).ready(function() {
             $("#submit").text("Logout")
             request = "logout"
             console.log("Updated Successed")
+            if(redir === true)
+            $(location).attr("href", "./query.html")
         }
         else{
+            $("#uname").val("")
+            $("#password").val("")
             $("#try_login").show()
             $("#already_login").hide()
             $("#submit").text("Login")
@@ -41,7 +45,7 @@ $(document).ready(function() {
             if(data.status == "Failed")
                 alert("Wrong password")
             console.log(data)
-            updateFrame(data)
+            updateFrame(data, true)
         })
     })
 });

@@ -1,10 +1,44 @@
 var productObj = {}
 
 $(document).ready(function(){
+    function genProductIntroBlock(){
+        var prodA_block = $(`
+            <div class="wid-30">
+            <img id="prodA_spec_img" src="img/productA/pa_spec1_0.jpeg">
+            </div>`)
+        var spec_block = $(`<form class="wid-70" id="specBlock"></form>`)
+        productObj.productA.spec[1].detail.forEach((spec,idx)=>{
+            var id=`btn_productA_${idx}`
+            var btn = $(`
+                <input type="radio" value="${idx}" name="prodA_spec1" id="${id}">
+                <label for="${id}">${spec}</label><br>`)
+            spec_block.append(btn)
+        })
+        
+        $("#prod_cont_A #spec_container").append(prodA_block)
+        $("#prod_cont_A #spec_container").append(spec_block)
+
+        $("#prod_cont_A h3").text(productObj.productA.name)
+        $("#prod_cont_B h3").text(productObj.productB.name)
+        $("#prod_cont_C h3").text(productObj.productC.name)
+        
+        $("#prod_cont_A #spec_cont").text(productObj.productA.description)
+        $("#prod_cont_B #spec_cont").text(productObj.productB.description)
+        $("#prod_cont_C #spec_cont").text(productObj.productC.description)
+
+    }
+
     var purchaseCounter = 0
     $.getJSON("./initial", (data)=>{
         productObj = data
         $("#btn_add_purchase").trigger('click')
+        genProductIntroBlock()
+        
+        $('input[type=radio][name=prodA_spec1]').change(()=>{
+        //$("#specBlock").change(()=>{
+            var idx=$("input[name='prodA_spec1']:checked").val()
+            $("#prodA_spec_img").attr("src", `img/productA/pa_spec1_${idx}.jpeg`)
+        })
     })
 
     function genProductSpecBlock(productType){
@@ -50,22 +84,22 @@ $(document).ready(function(){
 
             <div class="div_question">
             <label for="department">系級</label>
-            <input id="department" required/>
+            <input type="text" id="department" required/>
             </div>
 
             <div class="div_question">
             <label for="dest_name">姓名</label>
-            <input id="dest_name" required/>
+            <input type="text" id="dest_name" required/>
             </div>
 
             <div class="div_question">
-            <label for="contact">臉書主頁</label>
-            <input id="contact" required/>
+            <label for="contact">fb連結</label>
+            <input type="url" id="contact" required/>
             </div>
 
             <!--div class="div_question">
             <label for="extra">其他聯絡方式</label>
-            <input id="extra" required/>
+            <input type="text" id="extra" required/>
             </div-->
 
             </div>
@@ -127,6 +161,7 @@ $(document).ready(function(){
         var sid =     getInputValue( $("#basic_info #sid").val() )
         var fb_link = getInputValue( $("#basic_info #fb_link").val() )
         var pnum =    getInputValue( $("#basic_info #pnum").val() )
+        var email =   getInputValue( $("#basic_info #email").val() )
 
         if(bname===false || sid===false || fb_link===false || pnum===false){
             alert("Bad input in basic information")
@@ -137,7 +172,8 @@ $(document).ready(function(){
                 "Name":bname,
                 "Sid":sid,
                 "FB":fb_link,
-                "Phone":pnum
+                "Phone":pnum,
+                "Email":email
             }
             return basicInfo
         }
@@ -215,9 +251,4 @@ $(document).ready(function(){
     })
 })
 
-function productIntro(){
-    var block = $(`
-        <></>
-        `)
-    $("#Acontain_info")
-}
+
