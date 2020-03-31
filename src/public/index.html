@@ -5,77 +5,117 @@
         <title></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="index.css">
-        <script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="core.js"></script>
-        <script src="app.js"></script>
+        <!--meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-hashes' 'self' cdn.bootcss.com code.jquery.com;"-->
+        <script type="text/javascript" src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="core.js"></script>
+        <script type="text/javascript" src="app.js"></script>
     </head>
     <body>
-        <div class="header">
-            <h1 align="center"> ES 工科傳情 電記著你</h1>
-            <img src="">
-            <p class="div_center">
-            🌹2020工科系傳情-電記著你🌹<br>
-            ⚡️訂購日期｜即日起～4/25<br>
-            ⚡️訂購方式｜線上表單預定<br>
+        <div class="header narrow slim div_center">
+            <!--h1>ES 工科傳情</h1>
+                <h2>電記著你</h2-->
+                <img src="img/cover/logo.png">
+                <p>訂購日期｜即日起～4/24 21:00<br>
+                訂購方式｜線上表單預定</p>
+                <!--table>
+                    <col class="col_mid_left">
+                    <col class="col_mid_right">
+                    <tr>
+                        <td class="text_right right_border_1px border_dark">訂購日期</td>
+                        <td>即日起～4/25</td>
+                    </tr>
+                    <tr>
+                        <td class="text_right right_border_1px border_dark">訂購方式</td>
+                        <td>線上表單預定</td>
+                    </tr>
+                </table-->
 
-            📣擺攤資訊📣<br>
-            預購時間｜4/20～4/25  18:30～21:30<br>
-            取貨時間｜5/18～5/22  18:30～21:30<br>
-            地點｜勝後木桌<br>
-            ——————————————<br>
-            👉🏻商品資訊👈🏻<br>
-            💘我「電」記 $70<br>
-            電路板＆永生花球吊飾<br>
+                <div class="bottom_line"></div>
+                <h3>擺攤資訊</h3>
+                <p>
+                預購時間｜4/20～4/24  18:30～21:30<br>
+                取貨時間｜5/18～5/22  18:30～21:30<br>
+                地點｜勝後木桌</p>
+                <!--
+                <table>
+                    <col class="col_left">
+                    <col class="col_right">
+                    <tr>
+                        <td rowspan=2 class="text_right right_border_1px border_dark">預購時間</td>
+                        <td>4/20(一)～4/25(六)</td>
+                    </tr>
+                    <tr><td>18:30～21:30</td></tr>
+                
+                    <tr>
+                        <td rowspan=2 class="text_right right_border_1px border_dark">取貨時間</td>
+                        <td>5/18(一)～5/22(五)</td>
+                    </tr>
+                    <tr><td>18:30～21:30</td></tr>
 
-            💘我「花」現 $50<br>
-            卡斯比亞情人草試管<br>
+                    <tr>
+                        <td class="text_right right_border_1px border_dark">地點</td><td>勝後木桌</td>
+                    </tr>
+                </table-->
 
-            💘我「稻」歉 $100<br>
-            麥穗試管燈(USB接頭)<br>
-            
-            ✨優惠方式<br>
-            💸打卡送貼紙，單筆消費只送一張<br>
-            💸滿額折價：<br>
-            消費滿150折$10<br>
-            消費滿220折$20<br>
-            </p>
+                <div class="bottom_line"></div>
+                <h3>滿額優惠</h3>
+                <p>
+                消費滿150折$10<br>
+                消費滿220折$20<br><br>
+                </p>
         </div>
 
-        <div class="">
+        <div class="bottom_line"></div>
+
+        <div class="intro_container wide">
             <!--Prducts introduction-->
-            <div class="prod_container" id="prod_cont_A">
-                <div>
+            <div class="wide solid_back" id="prod_cont_A">
+                <div class="header">
                     <h3 clase="wid-30"></h3>
                     <p clase="wid-70" id="spec_cont"></p>
+                    <p id="price"></p>
                 </div>
                 <img src="img/productA/pa_main.jpeg">
                 <div id="spec_container"></div>
             </div>
-            
-            <div class="prod_container" id="prod_cont_B">
-                <div>
+
+            <div class="wide solid_back" id="prod_cont_B">
+                <div class="header">
                     <h3 clase="wid-30"></h3>
                     <p clase="wid-70" id="spec_cont"></p>
+                    <p id="price"></p>
                 </div>
                 <img src="img/productB/pb_main.jpeg">
                 <div id="spec_container"></div>
             </div>
-            
-            <div class="prod_container" id="prod_cont_C">
-                <div>
+
+            <div class="wide solid_back" id="prod_cont_C">
+                <div class="header">
                     <h3 clase="wid-30"></h3>
                     <p clase="wid-70" id="spec_cont"></p>
+                    <p id="price"></p>
                 </div>
                 <img class="img_main" src="img/productC/pc_main.jpeg">
                 <div id="spec_container"></div>
             </div>
+
+            <div class="wide solid_back" id="prod_cont_D">
+                <div class="header">
+                    <h3 clase="wid-30"></h3>
+                    <p clase="wid-70" id="spec_cont"></p>
+                    <p id="price"></p>
+                </div>
+                <img class="img_main" src="img/productD/pd_main.jpeg">
+                <div id="spec_container"></div>
+            </div>
         </div>
 
+        <div class="bottom_line"></div>
         <div class="main_container">
             <!--Basic informatiion-->
             <h2 class="div_center">購買人資料</h2> 
-            <form id="basic_info" onsubmit="return false">
+            <form  class="content_small" id="basic_info" onsubmit="return false">
                 <div class="right_float narrow" id="basic_info">
                     <div>
                         <label for="bname">姓名：</label> 
@@ -90,7 +130,7 @@
                         <input class="abs_right" type="url" id="fb_link" required/>
                     </div>
                     <div>
-                        <label for="pnum">電話號碼:</label>
+                        <label for="pnum">電話號碼：</label>
                         <input class="abs_right" type="tel" id="pnum" required/>
                         <!--input class="abs_right" type="tel" id="pnum" pattern="[0-9]{10}" required/-->
                     </div>    
@@ -104,18 +144,27 @@
                 <div>
                     <div id="purchase_list">
                     </div>
-                    <button id="btn_add_purchase" formnovalidate> + </button>
-                </div>
-                <div>
-                    <div class="bottom_line">
-                        <p>Price</p>
-                        <p id="price_tag">0</p>
-                    </div>
-                    <button type="submit" id="btn_submit">Submit</button>
+                    <button id="btn_add_purchase" formnovalidate>新增商品&收件人</button>
                 </div>
             </form>
-            <div id="query_result"></div>
         </div>
+        <div class="wide content_medium relative">
+            <p>總金額</p>
+            <p id="price_tag">0</p>
+        </div>
+        <div class="wide bottom_line"></div>
+        <div class="notice_container">
+            <h2>注意事項</h2>
+            <ol class="content_small">
+                <li>每樣商品拍攝皆有因光線及電腦螢幕不同調色方面的色差問題，還是要以實際商品的顏色為主。</li>
+                <li>訂單送出後無法更改，按下送出前請確認寄件人、收件人資訊及繳費金額。</li>
+                <li>所有選項皆為必填。</li>
+                <li>請記得在預購擺攤4/20～4/25 18:30～21:30 期間前往勝後木桌完成付款，訂單才算成立喔！</li>
+                <li>如有疑問請私訊粉專。</li>
+                <ol>
+        </div>
+        <button type="submit" id="btn_submit">送出</button>
+        <div id="query_result"></div>
     </body>
 </html>
 

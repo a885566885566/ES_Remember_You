@@ -24,33 +24,31 @@ $(document).ready(function() {
                 prodSpec += productObj[product["ProductType"]].spec[idx].name + ": " + spec + "              "
             })
             var block = $(`
-                <div class="purchase_item content_small">
+                <div class="content_small">
 
                 <div class="div_center">
                 <label class="fine">禮物種類</label>
-                <p class="star_info">${prodName}</p></div>
-                <div class="div_center">
+                <p class="star_info">${prodName}</p>
+                </div>
+
+                <div class="content_tiny div_center">
                 <label class="fine">禮物規格</label>
                 <p>${prodSpec}</p>
                 </div>
 
-                <div class="narrow left_border_2vw border_blue right_float">
+                <div class="content_tiny narrow left_border_2vw border_blue right_float">
                 <div>
                 <label>收件人</label>
-                <p>${product["DestName"]}</p></div>
+                <p class="abs_right">${product["DestName"]}</p></div>
 
                 <div>
                 <label>系級</label>
-                <p>${product["Department"]}</p></div>
+                <p class="abs_right">${product["Department"]}</p></div>
 
                 <div>
                 <label>fb連結</label>
-                <p>${product["Contact"]}</p></div>
+                <p class="abs_right">${product["Contact"]}</p></div>
 
-                <!--div>
-                <label>其他資訊</label>
-                <p>${product["Extra"]}</p></div-->
-                </div>
                 </div>
                 `)
             product_block.append(block)
@@ -80,13 +78,16 @@ $(document).ready(function() {
             var buyTime = new Date(order["BuyTime"]).toLocaleTimeString()
             var order_block = $(`
                 <div>
-                <div class="wid-70 narrow">
-                <div class="buy_time content_small">
-                <label>下單時間</label>
+                <div class="div_center narrow content_small">
+                
+                <div class="">
+                <label class="">下單時間</label>
                 <p class="abs_right">${buyDate} </p>
-                <p class="abs_right">  ${buyTime}</p></div>
-                <div class="exp_price">
-                <label>應付金額</label>
+                <p class="abs_right">  ${buyTime}</p>
+                </div>
+
+                <div>
+                <label class="">應付金額</label>
                 <p class="abs_right">${order["Price"]}</p></div>
                 </div>
 
@@ -115,7 +116,7 @@ $(document).ready(function() {
                     `)
                 if(valid){
                     var btnid = order["BuyTime"]
-                    var btn = $(`<button class="wid-30 abs_right" value=${btnid} id=${btnid}>確認繳費</button>`)
+                    var btn = $(`<button class="" value=${btnid} id=${btnid}>確認繳費</button>`)
                     order_block.append(btn)
                 }
                 $(btn).click((e)=>{

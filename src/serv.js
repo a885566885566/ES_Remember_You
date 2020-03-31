@@ -66,6 +66,8 @@ function getInputValue(value){
     if( value === undefined ||
         value == null ||
         value.length <= 0 ||
+        value.indexOf('\"') >= 0 ||
+        value.indexOf('\'') >= 0 ||
         value.indexOf('<') >= 0 ||
         value.indexOf('>') >= 0 ||
         value.indexOf('(') >= 0 ||
@@ -76,12 +78,20 @@ function getInputValue(value){
     }
     return value
 }
+function checkInputValid(dict){
+    var ids = Object.Keys(dict)
+    ids.forEach((id)=>{
+        dict[id]
+    })
+}
 
 function calculatePrice(products){
     var totalPrice = 0
     products.forEach((product)=>{
         var product_type = product["ProductType"]
         totalPrice += productObj[product_type].price
+        if(product.ProductSpec.indexOf("不加購") < 0)
+            totalPrice += productObj.productD.price
     })
 
     /* discount rule */
@@ -102,10 +112,13 @@ app.get("/order", (req, res)=>{
     console.log("id= " + hid )
     console.log("new_order")
     console.log(new_order)
+    new_order.OrderInfo[0]["Paid"] = false
+    new_order.OrderInfo[0]["PaidTime"] = ""
+    new_order.OrderInfo[0]["Cashier"] = ""
+    new_order.OrderInfo[0]["BuyTime"] = new Date().getTime()
     var price = calculatePrice(new_order.OrderInfo[0].Products)
     /* Save result */
     /* Check if the price is currect */
-    new_order.OrderInfo[0].BuyTime = new Date().getTime()
     const orderInfo = new_order.OrderInfo[0]
     if(price == orderInfo["Price"]){
         // Somebody already has record
