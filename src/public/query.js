@@ -23,34 +23,24 @@ $(document).ready(function() {
             product["ProductSpec"].forEach((spec, idx)=>{
                 prodSpec += productObj[product["ProductType"]].spec[idx].name + ": " + spec + "              "
             })
-            var block = $(`
-                <div class="content_small">
 
-                <div class="div_center">
-                <label class="fine">禮物種類</label>
-                <p class="star_info">${prodName}</p>
-                </div>
+            var block = $(`<div class="content_small"></div>`)
+                .append($(`<div class="div_center"></div>`)
+                    .append($(`<label class="fine">禮物種類</label>`))
+                    .append($(`<p class="star_info"></p>`).text(prodName)))
+                .append($(`<div class="content_tiny div_center"></div>`)
+                    .append($(`<label class="fine">禮物規格</label>`))
+                    .append($(`<p></p>`).text(prodSpec)))
+     
+            var receiver_block = $(`<div class="content_small narrow left_border_2vw border_blue right_float"></div>`)
+                .append($(`<div><label>收件人</label></div>`)
+                    .append($(`<p class="abs_right"></p>`).text(product["DestName"])))
+                .append($(`<div><label>系級</label></div>`)
+                    .append($(`<p class="abs_right"></p>`).text(product["Department"])))
+                .append($(`<div><label>fb連結</label></div>`)
+                    .append($(`<p class="abs_right"></p>`).text(product["Contact"])))
 
-                <div class="content_tiny div_center">
-                <label class="fine">禮物規格</label>
-                <p>${prodSpec}</p>
-                </div>
-
-                <div class="content_tiny narrow left_border_2vw border_blue right_float">
-                <div>
-                <label>收件人</label>
-                <p class="abs_right">${product["DestName"]}</p></div>
-
-                <div>
-                <label>系級</label>
-                <p class="abs_right">${product["Department"]}</p></div>
-
-                <div>
-                <label>fb連結</label>
-                <p class="abs_right">${product["Contact"]}</p></div>
-
-                </div>
-                `)
+            block.append(receiver_block)
             product_block.append(block)
         })
         return product_block
@@ -76,24 +66,15 @@ $(document).ready(function() {
             var orderInfo_block = $(`<div class="left_border_2vw border_brown"></div>`)
             var buyDate = new Date(order["BuyTime"]).toLocaleDateString()
             var buyTime = new Date(order["BuyTime"]).toLocaleTimeString()
-            var order_block = $(`
-                <div>
-                <div class="div_center narrow content_small">
-                
-                <div class="">
-                <label class="">下單時間</label>
-                <p class="abs_right">${buyDate} </p>
-                <p class="abs_right">  ${buyTime}</p>
-                </div>
 
-                <div>
-                <label class="">應付金額</label>
-                <p class="abs_right">${order["Price"]}</p></div>
-                </div>
-
-                </div>
-                `)
-
+            var order_block = $(`<div></div>`).append()
+            var order_block = $(`<div class="div_center narrow content_small"></div>`)
+                .append( $(`<div><label>下單時間</label></div>`)
+                    .append($(`<p class="abs_right"></p>`).text(buyDate))
+                    .append($(`<p class="abs_right"></p>`).text(buyTime)))
+                .append( $(`<div><label>應付金額</label></div>`)
+                    .append($(`<p class="abs_right"></p>`).text(order["Price"])))
+               
             if( order["Paid"] == true ){
                 var paid_time = new Date(order["PaidTime"]).toLocaleString()
                 var paid_block = $(`
@@ -116,7 +97,8 @@ $(document).ready(function() {
                     `)
                 if(valid){
                     var btnid = order["BuyTime"]
-                    var btn = $(`<button class="" value=${btnid} id=${btnid}>確認繳費</button>`)
+                    var btn = $(`<button>確認繳費</button>`).val(btnid)
+                    btn.attr('id', btnid)
                     order_block.append(btn)
                 }
                 $(btn).click((e)=>{

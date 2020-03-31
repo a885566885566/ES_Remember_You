@@ -355,7 +355,11 @@ button{
     height:5em;
 }
 input[type=radio]{
-    /*display:none;*/
+    display:none;
+    /*width:50%;
+    height:50%;
+    margin:0;
+    padding:0;*/
 }
 input[type=radio]~label{
     background-color:#CCCCFF;

@@ -23,7 +23,6 @@ $(document).ready(function(){
             $(`#${productType}_spec_img`).attr("src", `img/${productType}/spec${spec_id}_${auto_show[productType]["nowIdx"]}.jpeg`)
             auto_show[productType]["nowIdx"] += 1
             auto_show[productType]["nowIdx"] %= auto_show[productType]["maxLen"]
-            //console.log(`btn_${productType}_${auto_show[productType]["nowIdx"]}`)
         }, 1000)
 
         /*
@@ -104,50 +103,24 @@ $(document).ready(function(){
      */
     $("#btn_add_purchase").click(()=>{
         var spec_block_A = genProductSpecBlock("productA")
-        //var spec_block_D = genProductSpecBlock("productA")
-        var newBlock = $(`
-            <div class="purchase_item slim_border border_round content_small" id="purchase_no${purchaseCounter}">
-            <div class="purchase_info">
-            <p class="right_float star_info">商品設定</p>
-            <div>
-            <label for="type">商品種類</label>
-            <select class="abs_right" id="type">
-            <option value="productA">${productObj.productA.name}</option>
-            <option value="productB">${productObj.productB.name}</option>
-            <option value="productC">${productObj.productC.name}</option>
-            </select>
-            </div>
 
-            <div class="div_question" id="spec_container">
-            </div>
+        var newBlock = $(`<div class="purchase_item slim_border border_round content_small" id="purchase_no${purchaseCounter}"></div>`)
+        .append($(`<div class="purchase_info"><p class="right_float star_info">商品設定</p></div>`)
+            .append($(`<div><label for="type">商品種類</label></div>`)
+                .append($(`<select class="abs_right" id="type">`)
+                    .append($(`<option value="productA"></option>`).text(productObj.productA.name))
+                    .append($(`<option value="productB"></option>`).text(productObj.productB.name))
+                    .append($(`<option value="productC"></option>`).text(productObj.productC.name))))
+            .append($(`<div id="spec_container"></div>`))
+            .append($(`<div class="right_float"><p class="info_header star_info">收件人設定</p></div>`)
+                .append($(`<div><label for="department">系級</label>
+                           <input class="abs_right" type="text" id="department" required/></div>`))
+                .append($(`<div><label for="dest_name">姓名</label>
+                           <input class="abs_right" type="text" id="dest_name" required/></div>`))
+                .append($(`<div><label for="contact">fb連結</label>
+                           <input class="abs_right" type="text" id="contact" required/></div>`))))
+        .append($(`<button class="circle abs_top" formnovalidate>X</button>`).attr('id', `btn_close${purchaseCounter}`))
 
-            </div>
-            <div class="right_float">
-            <p class="info_header star_info">收件人設定</p>
-
-            <div>
-            <label for="department">系級</label>
-            <input class="abs_right" type="text" id="department" required/>
-            </div>
-
-            <div>
-            <label for="dest_name">姓名</label>
-            <input class="abs_right" type="text" id="dest_name" required/>
-            </div>
-
-            <div>
-            <label for="contact">fb連結</label>
-            <input class="abs_right" type="url" id="contact" required/>
-            </div>
-
-            <!--div class="div_question">
-            <label for="extra">其他聯絡方式</label>
-            <input type="text" id="extra" required/>
-            </div-->
-
-            </div>
-            <button class="circle abs_top" id="btn_close${purchaseCounter}" formnovalidate>X</button>
-            </div>`)
         $(newBlock).find("#spec_container").append(spec_block_A)
         $("#purchase_list").append(newBlock)
         calculatePrice()
