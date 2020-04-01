@@ -3,36 +3,48 @@ var productObj = {}
 $(document).ready(function(){
     var auto_show = {}
     function genProductMultiSpecBlock(productType, spec_id){
-        var spec_block = $(`<form class="content_tiny" id="${productType}_spec_container">
-            <img class="div_center" id="${productType}_spec_img" src="img/${productType}/spec${spec_id}_0.jpeg">
-            </form>`)
+        var spec_block = $(`<form class="content_tiny"></form>`)
+        .attr('id', `${productType}_spec_container`)
+
         productObj[productType].spec[spec_id].detail.forEach((spec,idx)=>{
-            var id=`btn_${productType}_${idx}`
-            var btn = $(`
-                <div>
-                <input type="radio" value="${idx}" name="${productType}_spec1" id="${id}">
-                <label for="${id}">${spec}</label>
-                </div>`)
+            const img_id = `${productType}_spec_img_${idx}`
+            const img_url = `img/${productType}/spec${spec_id}_${idx}.jpeg`
+            spec_block.append($(`<img class="div_center">`)
+                .attr({
+                    id: img_id,
+                    src: img_url}).hide())
+        })
+
+        productObj[productType].spec[spec_id].detail.forEach((spec,idx)=>{
+            const id=`btn_${productType}_${idx}`
+            var btn = $(`<div></div>`)
+                .append($(`<input type="radio">`)
+                    .val(idx).attr({id:id, name:`${productType}_spec${spec_id}`, value:idx}))
+                .append($(`<label></label>`).text(spec)
+                    .attr('for', id))
             spec_block.append(btn)
         })
+
+                
         auto_show[productType] = {}
         auto_show[productType]["maxLen"] = productObj[productType].spec[spec_id].detail.length
         auto_show[productType]["nowIdx"] = 0
         auto_show[productType]["interval_obj"] = setInterval(()=>{
-            $(`#btn_${productType}_${auto_show[productType]["nowIdx"]}`).prop('checked', true)
-            $(`#${productType}_spec_img`).attr("src", `img/${productType}/spec${spec_id}_${auto_show[productType]["nowIdx"]}.jpeg`)
+            $(`#btn_${productType}_${auto_show[productType]["nowIdx"]}`).prop('checked', false)
+            $(`#${productType}_spec_img_${auto_show[productType]["nowIdx"]}`).hide()
             auto_show[productType]["nowIdx"] += 1
             auto_show[productType]["nowIdx"] %= auto_show[productType]["maxLen"]
-        }, 1000)
-
+            $(`#btn_${productType}_${auto_show[productType]["nowIdx"]}`).prop('checked', true)
+            $(`#${productType}_spec_img_${auto_show[productType]["nowIdx"]}`).show()
+        }, 1500)
         /*
-        $(`input[type=radio][name=${productType}_spec${spec_id}]`).change(()=>{
-            var idx=$(`input[name=${productType}_spec${spec_id}]:checked`).val()
-            console.log("get")
-            $("#${productType}_spec_img").attr("src", `img/${productType}/spec1_${spec_id}.jpeg`)
-            clearInterval(auto_show[productType]["interval_obj"])
-        })
-        $(`#btn_${productType}_0`).prop("checked", true)*/
+        $(`input[type=radio][name=productA_spec${spec_id}]`).change(()=>{
+            $(`#${productType}_spec_img_${auto_show[productType]["nowIdx"]}`).hide()
+            var idx=$(`input[name='productA_spec${spec_id}']:checked`).val()
+            $(`#productA_spec_img_${idx}`).show()
+            clearInterval(auto_show["productA"]["interval_obj"])
+            console.log("stop")
+        })*/
 
         return spec_block
     }
@@ -62,20 +74,24 @@ $(document).ready(function(){
         productObj = data
         $("#btn_add_purchase").trigger('click')
         genProductIntroBlock()
-        
+       
         $('input[type=radio][name=productA_spec1]').change(()=>{
+            $(`#productA_spec_img_${auto_show.productA["nowIdx"]}`).hide()
             var idx=$("input[name='productA_spec1']:checked").val()
-            $("#productA_spec_img").attr("src", `img/productA/spec1_${idx}.jpeg`)
+            $(`#productA_spec_img_${idx}`).show()
             clearInterval(auto_show["productA"]["interval_obj"])
+            auto_show.productA["nowIdx"] = idx
         })
-        $("#btn_productA_0").prop("checked", true)
         
-        $('input[type=radio][name=productD_spec1]').change(()=>{
-            var idx=$("input[name='productD_spec1']:checked").val()
-            $("#productD_spec_img").attr("src", `img/productD/spec0_${idx}.jpeg`)
+        $('input[type=radio][name=productD_spec0]').change(()=>{
+            $(`#productD_spec_img_${auto_show.productD["nowIdx"]}`).hide()
+            var idx=$("input[name='productD_spec0']:checked").val()
+            $(`#productD_spec_img_${idx}`).show()
             clearInterval(auto_show["productD"]["interval_obj"])
+            auto_show.productD["nowIdx"] = idx
         })
-        $("#btn_productD_0").prop("checked", true)
+
+        /*$("#btn_productD_0").prop("checked", true)*/
     })
 
     function genProductSpecBlock(productType){
@@ -170,7 +186,7 @@ $(document).ready(function(){
         })
 
         /* discount rule */
-        if( totalPrice > 250 ) totalPrice -= 20
+        if( totalPrice > 220 ) totalPrice -= 20
         else if(totalPrice > 150 ) totalPrice -= 10
 
         $("#price_tag").text(totalPrice)

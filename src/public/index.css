@@ -70,7 +70,7 @@ h1, h2, .div_center, img{
 .content_tiny select:not(.star_info), 
 .content_tiny option:not(.star_info), 
 .content_tiny input:not(.star_info){
-    font-size:50%;
+    font-size:2vw;
 }
 .content_small li:not(.star_info), 
 .content_small label:not(.star_info), 
@@ -123,7 +123,7 @@ h1, h2, .div_center, img{
     width: 90%;
 }
 .slim{
-    width: 45%;
+    width: 65%;
 }
 
 /* Block Size*/
@@ -226,59 +226,6 @@ button{
 }
 /* Animation */
 
-/* Responsive Web*/
-@media (min-width: 600px) {
-    .header h3{
-        font-size:40px;
-    }
-    .header p, .header td{
-        font-size:20px;
-    }/*
-    .div_question *{
-        height:80%;
-    }
-    label, select, option, input{
-        text-align:center;
-    }*/
-    .intro_container{
-        width:700px;
-    }
-    .main_container{
-        width:700px;
-    }
-    /*
-    .info_header, button{
-        font-size:30px;
-    }*/
-    .content_tiny p:not(.star_info), 
-    .content_tiny li:not(.star_info), 
-    .content_tiny label:not(.star_info), 
-    .content_tiny select:not(.star_info), 
-    .content_tiny option:not(.star_info), 
-    .content_tiny input:not(.star_info){
-        font-size:20px;
-    }
-    .content_small li:not(.star_info), 
-    .content_small label:not(.star_info), 
-    .content_small select:not(.star_info), 
-    .content_small option:not(.star_info), 
-    .content_small input:not(.star_info){
-        font-size:25px;
-    }
-    .content_medium p, 
-    .content_medium label, 
-    .content_medium select, 
-    .content_medium option, 
-    .content_medium input{
-        font-size:35px;
-    }
-    .circle{
-        height:40px;
-        width:40px;
-        font-size:20px;
-    }
-}
-
 /* Border Style */
 .slim_border{
     padding:1% 10% 1% 10%;
@@ -336,24 +283,6 @@ button{
     display:none;
 }
 
-#productA_spec_container{
-    display:flex;    
-    align-items:initial;
-    padding-left:5%;
-    padding-right:5%;
-}
-#productA_spec_container label{
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-}
-#productA_spec_container img{
-    display:inline-block;
-    width:30%;
-}
-#productD_spec_container img{
-    width:auto;
-    height:5em;
-}
 input[type=radio]{
     display:none;
     /*width:50%;
@@ -393,5 +322,86 @@ table td{
     text-align:right;
 }
 #productA_spec_container{
+    display:flex;    
+    align-items:initial;
+    padding-left:5%;
+    padding-right:5%;
+}
+#productA_spec_container label{
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+}
+#productA_spec_container img{
+    display:inline-block;
+    width:30%;
+}
+#productD_spec_container img{
+    width:auto;
+    height:5em;
+}
+
+#productA_spec_container{
     max-height:150px;
 }
+#productD_spec_container{
+    margin:auto;
+    text-align:center;
+}
+
+/* Responsive Web*/
+@media (min-width: 600px) {
+    .header h3{
+        font-size:40px;
+    }
+    .header p, .header td{
+        font-size:20px;
+    }
+    .narrow{
+        width: 600px;
+    }
+    .slim{
+        width: 400px;
+    }
+    .intro_container{
+        width:700px;
+    }
+    .main_container{
+        width:700px;
+    }
+    /*
+    .info_header, button{
+        font-size:30px;
+    }*/
+    .content_tiny p:not(.star_info), 
+    .content_tiny li:not(.star_info), 
+    .content_tiny label:not(.star_info), 
+    .content_tiny select:not(.star_info), 
+    .content_tiny option:not(.star_info), 
+    .content_tiny input:not(.star_info){
+        font-size:20px;
+    }
+    .content_small li:not(.star_info), 
+    .content_small label:not(.star_info), 
+    .content_small select:not(.star_info), 
+    .content_small option:not(.star_info), 
+    .content_small input:not(.star_info){
+        font-size:25px;
+    }
+    .content_medium p, 
+    .content_medium label, 
+    .content_medium select, 
+    .content_medium option, 
+    .content_medium input{
+        font-size:35px;
+    }
+    .circle{
+        height:40px;
+        width:40px;
+        font-size:20px;
+    }
+    #productD_spec_container img{
+        height:150px;
+    }
+}
+
+

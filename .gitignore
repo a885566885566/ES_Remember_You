@@ -4,7 +4,6 @@
 *.swo
 *.DS_Store
 node_modules
-img
 src/order_list
 notuse.js
 src/log/*

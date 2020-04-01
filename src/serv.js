@@ -26,6 +26,7 @@ const KeyFilename = './private/keys.json';
 const ProductFilename = './private/products.json'
 const LoginLogFilename = './log/login_log.txt'
 const OrderLogFilename = './log/order_log.txt'
+const VisitedFilename = './private/visited.json'
 
 var orderStr = fs.readFileSync(OrderFilename);
 var orderObj = JSON.parse(orderStr);
@@ -33,6 +34,8 @@ var keyStr = fs.readFileSync(KeyFilename);
 var keyObj = JSON.parse(keyStr);
 var productStr = fs.readFileSync(ProductFilename);
 var productObj = JSON.parse(productStr);
+var visitedStr = fs.readFileSync(VisitedFilename);
+var visitedObj = JSON.parse(visitedStr);
 
 app.use(session({
     secret: keyObj.session_key, 
@@ -45,6 +48,11 @@ function saveLogFile(){
     var content = JSON.stringify(orderObj)
     console.log("Log saved")
     fs.writeFile(OrderFilename, content, 'utf8', (err)=>{
+        if (err)
+            console.log("Error to write file")
+    })
+    var visit = JSON.stringify(visitedObj)
+    fs.writeFile(VisitedFilename, visit, 'utf8', (err)=>{
         if (err)
             console.log("Error to write file")
     })
@@ -95,13 +103,17 @@ function calculatePrice(products){
     })
 
     /* discount rule */
-    if( totalPrice > 250 ) totalPrice -= 20
+    if( totalPrice > 220 ) totalPrice -= 20
     else if(totalPrice > 150 ) totalPrice -= 10
 
     return totalPrice
 }
 
 app.get("/initial", (req, res)=>{
+    visitedObj.Initial += 1
+    if( req.session.uname !== undefined )
+        productObj["status"] = "Success"
+    //console.log("Initial:" + req.session.uname)
     res.send(productObj)
 })
 app.get("/order", (req, res)=>{
@@ -132,6 +144,7 @@ app.get("/order", (req, res)=>{
     if(new_order.OrderInfo[0]["Price"] != price)
         writeOrderLog(`PRICE_ERR: hid=${hid}, name=${new_order.Name}, real_price=${price}, user_price=${new_order.OrderInfo[0]["Price"]}`)
     new_order.OrderInfo[0]["Price"] = price
+    visitedObj.Order += 1
     saveLogFile()
     writeOrderLog(`hid=${hid}, name=${new_order.Name}, id=${new_order.Sid}`)
     res.send(new_order)
@@ -139,13 +152,21 @@ app.get("/order", (req, res)=>{
 
 app.get("/query", (req, res)=>{
     var hid = req.query.hid
+    const buyid = req.query.buyid
+    const sid = req.session.uname
+    
     var msg = `Query request from ${hid}`
     var result = {}
-    if( req.session.uname )    result["status"] = "login"
-    else result["status"] = "normal"
+    if(buyid === undefined & sid === undefined){
+        result["status"] = "Permission deny"
+        res.send(result)
+        return false
+    }
 
-    console.log(msg)
-    if( orderObj[hid] !== undefined ){
+    if(sid !== undefined)   result["status"] = "login"
+    else                    result["status"] = "normal"
+    
+    if((orderObj[hid] == buyid) | (sid !== undefined)){
         result["query"] = orderObj[hid]
         res.send(result)
     }
@@ -153,6 +174,8 @@ app.get("/query", (req, res)=>{
         result["status"] = "failed"
         res.send(result)
     }
+    console.log(msg)
+    visitedObj.Query += 1
     writeOrderLog(`QUERY: hid=${hid}, result=${result.status}`)
 })
 
@@ -205,6 +228,7 @@ app.get("/login", (req, res)=>{
             console.log(err)
         })
     }
+    visitedObj.Login += 1
     res.send(result)
 })
 
@@ -230,6 +254,7 @@ app.get("/paid_request", (req, res)=>{
                 response.status = "info_error"
         })
     }
+    visitedObj.Paid += 1
     saveLogFile()
     writeOrderLog(`PAID_REQ: hid=${hid}, pid=${prod_id}, id=${req.session.uname} result=${response.status}`)
     res.send(response)
