@@ -211,7 +211,7 @@ $(document).ready(function(){
         var email =   getInputValue( $("#basic_info #email").val() )
 
         if(bname===false || sid===false || fb_link===false || pnum===false){
-            alert("輸入格式錯誤! 所有空格皆為必填，請勿輸入特殊符號，輸入不可包含空格。")
+            alert("輸入格式錯誤! 所有空格皆為必填，請勿輸入特殊符號，輸入不可包含空格。 FB連結裡面不可以有&符號！(請將&後面的東西都刪掉)")
             return false
         }
         else{

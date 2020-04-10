@@ -11,31 +11,19 @@ const session = require('express-session');
 
 //const crypto = require('crypto')
 
-const fs = require("fs");
+const logger = require('./logger.js')
+var orderObj = logger.getOrderObj
+var visitedObj = logger.getVisitObj
+const keyObj = logger.getKeyObj
+const productObj = logger.getProducObj 
 
+const order_summary = require('./summary.js')
 //var bodyParser = require('body-parser');
 //var request = require('request');
 //app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({extended : false}));
 
 const port = 11234;
-
-/* Order log file configuration */
-const OrderFilename = './order_list/order_list.json';
-const KeyFilename = './private/keys.json';
-const ProductFilename = './private/products.json'
-const LoginLogFilename = './log/login_log.txt'
-const OrderLogFilename = './log/order_log.txt'
-const VisitedFilename = './private/visited.json'
-
-var orderStr = fs.readFileSync(OrderFilename);
-var orderObj = JSON.parse(orderStr);
-var keyStr = fs.readFileSync(KeyFilename);
-var keyObj = JSON.parse(keyStr);
-var productStr = fs.readFileSync(ProductFilename);
-var productObj = JSON.parse(productStr);
-var visitedStr = fs.readFileSync(VisitedFilename);
-var visitedObj = JSON.parse(visitedStr);
 
 app.use(session({
     secret: keyObj.session_key, 
@@ -44,32 +32,7 @@ app.use(session({
 
 app.use(express.static(__dirname + '/public'))
 
-function saveLogFile(){
-    var content = JSON.stringify(orderObj)
-    console.log("Log saved")
-    fs.writeFile(OrderFilename, content, 'utf8', (err)=>{
-        if (err)
-            console.log("Error to write file")
-    })
-    var visit = JSON.stringify(visitedObj)
-    fs.writeFile(VisitedFilename, visit, 'utf8', (err)=>{
-        if (err)
-            console.log("Error to write file")
-    })
-}
 
-function writeLoginLog(msg){
-    fs.appendFile(LoginLogFilename, msg+"\n", function (err) {
-        if (err) throw err;
-        console.log("LOGIN: " + msg)
-    })
-}
-function writeOrderLog(msg){
-    fs.appendFile(OrderLogFilename, msg+"\n", function (err) {
-        if (err) throw err;
-        console.log("ORDER: " + msg)
-    })
-}
 function getInputValue(value){
     if( value === undefined ||
         value == null ||
@@ -85,12 +48,6 @@ function getInputValue(value){
         return false
     }
     return value
-}
-function checkInputValid(dict){
-    var ids = Object.Keys(dict)
-    ids.forEach((id)=>{
-        dict[id]
-    })
 }
 
 function calculatePrice(products){
@@ -113,20 +70,18 @@ function calculatePrice(products){
 }
 
 app.get("/initial", (req, res)=>{
-    visitedObj.Initial += 1
     if( req.session.uname !== undefined )
         productObj["status"] = "Success"
-    //console.log("Initial:" + req.session.uname)
     res.send(productObj)
+    visitedObj.Initial += 1
+    logger.saveVisitFile(visitedObj)
 })
 app.get("/order", (req, res)=>{
     try{
         var new_order = JSON.parse(req.query.str)
         var hid = req.query.id
 
-        console.log("Get new order:")
-        console.log("id= " + hid )
-        console.log("new_order")
+        console.log("Get new order: "+hid)
         console.log(new_order)
         new_order.OrderInfo[0]["Paid"] = false
         new_order.OrderInfo[0]["PaidTime"] = ""
@@ -146,16 +101,18 @@ app.get("/order", (req, res)=>{
                 orderObj[hid] = new_order
         }
         if(new_order.OrderInfo[0]["Price"] != price)
-            writeOrderLog(`PRICE_ERR: hid=${hid}, name=${new_order.Name}, real_price=${price}, user_price=${new_order.OrderInfo[0]["Price"]}`)
+            logger.saveOrderLog(`PRICE_ERR: hid=${hid}, name=${new_order.Name}, real_price=${price}, user_price=${new_order.OrderInfo[0]["Price"]}`)
         new_order.OrderInfo[0]["Price"] = price
-        visitedObj.Order += 1
-        saveLogFile()
-        writeOrderLog(`hid=${hid}, name=${new_order.Name}, id=${new_order.Sid}`)
         res.send(new_order)
+
+        visitedObj.Order += 1
+        logger.saveVisitFile(visitedObj)
+        logger.saveLogFile(orderObj)
+        logger.saveOrderLog(`hid=${hid}, name=${new_order.Name}, id=${new_order.Sid}`)
     }
     catch(e){
         console.log(e)
-        writeOrderLog(`ERROR: hid=${req.query.id} order_json=${req.query.str}`)
+        logger.saveOrderLog(`ERROR: hid=${req.query.id} order_json=${req.query.str}`)
     }
 })
 
@@ -163,9 +120,16 @@ app.get("/query", (req, res)=>{
     var hid = req.query.hid
     const buyid = req.query.buyid
     const sid = req.session.uname
+    const mode = req.query.mode
 
     var msg = `Query request from ${hid}`
     var result = {}
+
+    /* check permission */
+    /*
+     * Normal Buyer: normal
+     * Logined Query: login
+     */
     if(buyid === undefined & sid === undefined){
         result["status"] = "Permission deny"
         res.send(result)
@@ -175,17 +139,25 @@ app.get("/query", (req, res)=>{
     if(sid !== undefined)   result["status"] = "login"
     else                    result["status"] = "normal"
 
-    if((orderObj[hid] == buyid) | (sid !== undefined)){
-        result["query"] = orderObj[hid]
-        res.send(result)
+    if(mode == "personal"){
+        if((orderObj[hid] == buyid) | (sid !== undefined))
+        //if( orderObj[hid] == buyid )
+            result["query"] = orderObj[hid]
+        else
+            result["status"] = "failed"
     }
-    else{
-        result["status"] = "failed"
-        res.send(result)
-    }
+    else if(mode == "spec")
+        result["query"] = order_summary.getSpecSummary(orderObj)
+    else if(mode == "buyer")
+        result["query"] = order_summary.getBuyerSummary(orderObj)
+    else if(mode == "luckyguy")
+        result["query"] = order_summary.getLuckyGuySummary(orderObj)
+    
+    res.send(result)
+
     console.log(msg)
     visitedObj.Query += 1
-    writeOrderLog(`QUERY: hid=${hid}, result=${result.status}`)
+    logger.saveOrderLog(`QUERY: hid=${hid}, result=${result.status}`)
 })
 
 function checkAccount(uname, pswd){
@@ -228,16 +200,17 @@ app.get("/login", (req, res)=>{
             msg += " FAILED"
             result.status = "Failed"
         }
-        writeLoginLog(msg)
+        logger.saveLoginLog(msg)
     }
     else if(req.query.mode == "logout"){
         result.status = "Failed"
-        writeLoginLog(`uname=${req.session.uname} LOGOUT`)
+        logger.saveLoginLog(`uname=${req.session.uname} LOGOUT`)
         req.session.destroy((err)=>{
             console.log(err)
         })
     }
     visitedObj.Login += 1
+    logger.saveVisitFile(visitedObj)
     res.send(result)
 })
 
@@ -264,8 +237,8 @@ app.get("/paid_request", (req, res)=>{
         })
     }
     visitedObj.Paid += 1
-    saveLogFile()
-    writeOrderLog(`PAID_REQ: hid=${hid}, pid=${prod_id}, id=${req.session.uname} result=${response.status}`)
+    logger.saveLogFile(orderObj)
+    logger.saveOrderLog(`PAID_REQ: hid=${hid}, pid=${prod_id}, id=${req.session.uname} result=${response.status}`)
     res.send(response)
 })
 console.log("Prepare done");
