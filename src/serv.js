@@ -103,7 +103,10 @@ function calculatePrice(products){
     })
 
     /* discount rule */
-    if( totalPrice > 220 ) totalPrice -= 20
+    if( totalPrice > 550 ) totalPrice -= 50
+    else if( totalPrice > 440 ) totalPrice -= 40
+    else if( totalPrice > 330 ) totalPrice -= 30
+    else if( totalPrice > 220 ) totalPrice -= 20
     else if(totalPrice > 150 ) totalPrice -= 10
 
     return totalPrice
@@ -117,44 +120,50 @@ app.get("/initial", (req, res)=>{
     res.send(productObj)
 })
 app.get("/order", (req, res)=>{
-    var new_order = JSON.parse(req.query.str)
-    var hid = req.query.id
+    try{
+        var new_order = JSON.parse(req.query.str)
+        var hid = req.query.id
 
-    console.log("Get new order:")
-    console.log("id= " + hid )
-    console.log("new_order")
-    console.log(new_order)
-    new_order.OrderInfo[0]["Paid"] = false
-    new_order.OrderInfo[0]["PaidTime"] = ""
-    new_order.OrderInfo[0]["Cashier"] = ""
-    new_order.OrderInfo[0]["BuyTime"] = new Date().getTime()
-    var price = calculatePrice(new_order.OrderInfo[0].Products)
-    /* Save result */
-    /* Check if the price is currect */
-    const orderInfo = new_order.OrderInfo[0]
-    if(price == orderInfo["Price"]){
-        // Somebody already has record
-        if(orderObj[hid] !== undefined){
-            orderObj[hid]["OrderInfo"].push(orderInfo)
+        console.log("Get new order:")
+        console.log("id= " + hid )
+        console.log("new_order")
+        console.log(new_order)
+        new_order.OrderInfo[0]["Paid"] = false
+        new_order.OrderInfo[0]["PaidTime"] = ""
+        new_order.OrderInfo[0]["Cashier"] = ""
+        new_order.OrderInfo[0]["BuyTime"] = new Date().getTime()
+        var price = calculatePrice(new_order.OrderInfo[0].Products)
+        /* Save result */
+        /* Check if the price is currect */
+        const orderInfo = new_order.OrderInfo[0]
+        if(price == orderInfo["Price"]){
+            // Somebody already has record
+            if(orderObj[hid] !== undefined){
+                orderObj[hid]["OrderInfo"].push(orderInfo)
+            }
+            // New user
+            else
+                orderObj[hid] = new_order
         }
-        // New user
-        else
-            orderObj[hid] = new_order
+        if(new_order.OrderInfo[0]["Price"] != price)
+            writeOrderLog(`PRICE_ERR: hid=${hid}, name=${new_order.Name}, real_price=${price}, user_price=${new_order.OrderInfo[0]["Price"]}`)
+        new_order.OrderInfo[0]["Price"] = price
+        visitedObj.Order += 1
+        saveLogFile()
+        writeOrderLog(`hid=${hid}, name=${new_order.Name}, id=${new_order.Sid}`)
+        res.send(new_order)
     }
-    if(new_order.OrderInfo[0]["Price"] != price)
-        writeOrderLog(`PRICE_ERR: hid=${hid}, name=${new_order.Name}, real_price=${price}, user_price=${new_order.OrderInfo[0]["Price"]}`)
-    new_order.OrderInfo[0]["Price"] = price
-    visitedObj.Order += 1
-    saveLogFile()
-    writeOrderLog(`hid=${hid}, name=${new_order.Name}, id=${new_order.Sid}`)
-    res.send(new_order)
+    catch(e){
+        console.log(e)
+        writeOrderLog(`ERROR: hid=${req.query.id} order_json=${req.query.str}`)
+    }
 })
 
 app.get("/query", (req, res)=>{
     var hid = req.query.hid
     const buyid = req.query.buyid
     const sid = req.session.uname
-    
+
     var msg = `Query request from ${hid}`
     var result = {}
     if(buyid === undefined & sid === undefined){
@@ -165,7 +174,7 @@ app.get("/query", (req, res)=>{
 
     if(sid !== undefined)   result["status"] = "login"
     else                    result["status"] = "normal"
-    
+
     if((orderObj[hid] == buyid) | (sid !== undefined)){
         result["query"] = orderObj[hid]
         res.send(result)

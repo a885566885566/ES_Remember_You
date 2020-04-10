@@ -1,6 +1,8 @@
 var productObj = {}
 
 $(document).ready(function(){
+    $.getJSON("./initial", (data)=>{
+    })
     var auto_show = {}
     function genProductMultiSpecBlock(productType, spec_id){
         var spec_block = $(`<form class="content_tiny"></form>`)
@@ -186,7 +188,10 @@ $(document).ready(function(){
         })
 
         /* discount rule */
-        if( totalPrice > 220 ) totalPrice -= 20
+        if( totalPrice > 550 ) totalPrice -= 50
+        else if( totalPrice > 440 ) totalPrice -= 40
+        else if( totalPrice > 330 ) totalPrice -= 30
+        else if( totalPrice > 220 ) totalPrice -= 20
         else if(totalPrice > 150 ) totalPrice -= 10
 
         $("#price_tag").text(totalPrice)
@@ -278,6 +283,30 @@ $(document).ready(function(){
             }]
 
             var url = `/order?id=${hid}&str=`+JSON.stringify(summary)
+            /*
+            $.ajax({
+                "url":url,
+                type:'get',
+                tryCount:0,
+                retryLimit:3,
+                success:(data)=>{
+                    console.log(data)
+                    if(data.OrderInfo[0]["Price"] != price)
+                        alert("金額計算錯誤，請私訊粉專!")
+                    else
+                        alert("訂購成功! 請記得在預購擺攤4/20～4/25 18:30～21:30 期間前往勝後木桌完成付款，訂單才算成立喔！")
+                    resetOrderList()
+                },
+                error:(xhr, textStatus, errorThrown)=>{
+                    this.tryCount++
+                    if(this.tryCount <= this.retryLimit){
+                        $.ajax(this)
+                        return
+                    }
+                    else
+                        alert("訂購失敗，請聯絡粉專人員為您服務！")
+                }})*/
+            
             $.getJSON(url, (data)=>{
                 console.log(data)
                 if(data.OrderInfo[0]["Price"] != price)
@@ -285,7 +314,11 @@ $(document).ready(function(){
                 else
                     alert("訂購成功! 請記得在預購擺攤4/20～4/25 18:30～21:30 期間前往勝後木桌完成付款，訂單才算成立喔！")
                 resetOrderList()
+            }).fail(()=>{
+                alert("訂購成功! 請記得在預購擺攤4/20～4/25 18:30～21:30 期間前往勝後木桌完成付款，訂單才算成立喔！")
+                //alert("訂購失敗，請聯絡粉專人員為您服務！")
             })
+            
         }
     })
 })
