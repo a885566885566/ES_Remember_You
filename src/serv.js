@@ -23,7 +23,7 @@ const order_summary = require('./summary.js')
 //app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({extended : false}));
 
-const port = 11234;
+const port = 10418;
 
 app.use(session({
     secret: keyObj.session_key, 
@@ -87,6 +87,10 @@ app.get("/order", (req, res)=>{
         new_order.OrderInfo[0]["PaidTime"] = ""
         new_order.OrderInfo[0]["Cashier"] = ""
         new_order.OrderInfo[0]["BuyTime"] = new Date().getTime()
+        new_order.OrderInfo[0].Products.forEach((prd, idx)=>{
+            new_order.OrderInfo[0].Products[idx]["CardId"] = visitedObj["CardId"]
+            visitedObj["CardId"] += 1
+        })
         var price = calculatePrice(new_order.OrderInfo[0].Products)
         /* Save result */
         /* Check if the price is currect */
@@ -218,6 +222,7 @@ app.get("/paid_request", (req, res)=>{
     var response = {}
     const hid = req.query.hid
     const prod_id = req.query.id
+    const special = req.query.special
     if(req.session.uname === undefined){
         response.status = "permission_deny"
     }
@@ -230,6 +235,14 @@ app.get("/paid_request", (req, res)=>{
                 orderObj[hid].OrderInfo[idx].Paid = true
                 orderObj[hid].OrderInfo[idx].PaidTime = new Date().getTime()
                 orderObj[hid].OrderInfo[idx].Cashier = req.session.uname
+                // Use discount
+                if(orderObj[hid].OrderInfo[idx].BuyTime == special){
+                    orderObj[hid].OrderInfo[idx].Discount = special
+                    console.log("Use discount")
+                }
+                else
+                    console.log("Discount id error")
+
                 response.status = "status_updated"
             }
             else

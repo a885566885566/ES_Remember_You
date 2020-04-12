@@ -1,5 +1,5 @@
 
-
+var orderData = {}
 
 $(document).ready(function() {    
     var productObj = {}
@@ -25,17 +25,27 @@ $(document).ready(function() {
             var prodName = productObj[product["ProductType"]].name
             var prodSpec =""
             console.log(product["ProductSpec"])
-            product["ProductSpec"].forEach((spec, idx)=>{
-                prodSpec += productObj[product["ProductType"]].spec[idx].name + ": " + spec + "              "
-            })
 
-            var block = $(`<div class="content_small"></div>`)
+            var specBlock = $(`<table class="simple wid_half"></table>`)
+            product["ProductSpec"].forEach((spec, idx)=>{
+                specBlock.append($(`<tr></tr>`)
+                        .append( $(`<td class="text_right right_line"></td>`).text(productObj[product["ProductType"]].spec[idx].name) )
+                        .append($(`<td></td>`).text(spec)))
+                    .append
+            })
+            const maskName = product["DestName"].substring(0, 1) + " O " + product["DestName"].substring(2, product["DestName"].length)
+            specBlock.append( $(`<tr><td class="text_right right_line">送給誰呢</td></tr>`)
+                        .append( $(`<td></td>`).text(maskName)))
+                     .append( $(`<tr><td class="text_right right_line">流水編號</td></tr>`)
+                        .append( $(`<td></td>`).text(("000"+product.CardId).slice(-4))))
+
+            var block = $(`<div class="left_border_2vw border_blue content_small"></div>`)
                 .append($(`<div class="div_center"></div>`)
                     .append($(`<label class="fine">禮物種類</label>`))
                     .append($(`<p class="star_info"></p>`).text(prodName)))
                 .append($(`<div class="content_tiny div_center"></div>`)
-                    .append($(`<label class="fine">禮物規格</label>`))
-                    .append($(`<p></p>`).text(prodSpec)))
+                    .append(specBlock))
+                .append($(`<div class="bottom_line"></div>`))
 
             var receiver_block = $(`<div class="content_small narrow left_border_2vw border_blue right_float"></div>`)
                 .append($(`<div><label>收件人</label></div>`)
@@ -45,7 +55,7 @@ $(document).ready(function() {
                 .append($(`<div><label>fb連結</label></div>`)
                     .append($(`<p class="abs_right"></p>`).text(product["Contact"])))
 
-            block.append(receiver_block)
+            //block.append(receiver_block)
             product_block.append(block)
         })
         return product_block
@@ -72,13 +82,11 @@ $(document).ready(function() {
             var buyDate = new Date(order["BuyTime"]).toLocaleDateString()
             var buyTime = new Date(order["BuyTime"]).toLocaleTimeString()
 
-            var order_block = $(`<div></div>`).append()
-            var order_block = $(`<div class="div_center narrow content_small"></div>`)
-                .append( $(`<div><label>下單時間</label></div>`)
-                    .append($(`<p class="abs_right"></p>`).text(buyTime))
-                    .append($(`<p class="abs_right"></p>`).text(buyDate)))
-                .append( $(`<div><label>應付金額</label></div>`)
-                    .append($(`<p class="abs_right"></p>`).text(order["Price"])))
+            var order_block = $(`<table class="wid_half content_tiny simple"></table>`)
+                .append( $(`<tr><td class="text_right">下單時間</td></tr>`)
+                    .append($(`<td></td>`).text(buyDate + buyTime)))
+                .append( $(`<tr><td class="text_right">應付金額</td></tr>`)
+                    .append($(`<td></td>`).attr("id", "price_"+order["BuyTime"]).text(order["Price"])))
 
             if( order["Paid"] == true ){
                 var paid_time = new Date(order["PaidTime"]).toLocaleString()
@@ -102,17 +110,37 @@ $(document).ready(function() {
                     `)
                 if(valid){
                     var btnid = order["BuyTime"]
-                    var btn = $(`<button>確認繳費</button>`).val(btnid)
-                    btn.attr('id', btnid)
-                    order_block.append(btn)
+                    var validBlock = $(`<tr></tr>`)
+                    validBlock.append( $(`<td></td>`))
+                        
+                    var btn = $(`<button>確認繳費</button>`).val(btnid).attr('id', btnid)
+                    validBlock.append($(`<td></td>`)
+                        .append( $(`<div class="div_center"></div>`)
+                            .append($(`<input type="checkbox"></input>`).attr("id","ch_"+btnid).attr("value", btnid))
+                            .append($(`<label for="useDiscount">使用折價券</label>`)))
+                        .append(btn))
+                    order_block.append(validBlock)
                 }
                 $(btn).click((e)=>{
                     const paid_id = $(e.target).attr("value")
-                    $.get(`/paid_request?id=${paid_id}&hid=${hid}`, (data)=>{
+                    const special = "#ch_"+paid_id
+                    $.get(`/paid_request?id=${paid_id}&hid=${hid}&special=${paid_id}`, (data)=>{
                         console.log(data)
                         $(e.target).hide()
                         $("#submit").trigger('click')
                     })
+                })
+                $(validBlock).click((e)=>{
+                    const price_tag = '#price_'+$(e.target).val()
+                    var price = null
+                    orderData.OrderInfo.forEach((order)=>{
+                        if(order.BuyTime == $(e.target).val())
+                            price = order.Price
+                    })
+                    if($(e.target).prop("checked")==true)
+                        $(price_tag).text(price-10)
+                    else
+                        $(price_tag).text(price)
                 })
             }
             var product_block = genProductsBlock(order["Products"])
@@ -190,6 +218,7 @@ $(document).ready(function() {
                 if(result.status === "login") valid = true
                 if(mode == "personal"){
                     var summary_block = genOrdersBlock(result.query, hid, valid)
+                    orderData = result.query
                     console.log(summary_block)
                 }
                 else if(mode == "spec")

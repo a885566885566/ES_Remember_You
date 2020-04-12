@@ -40,6 +40,9 @@ table, tr, td{
     border: 1px solid black;
     border-collapse: collapse;
 }
+.simple, .simple *{
+    border:none;
+}
 .solid_back{
     background-color:#FFFFFF88;
     padding:5%;
@@ -117,6 +120,9 @@ table, tr, td{
     display:inline-block;
     width:70%;
 }
+.wid_half td{
+    width:50%;
+}
 .wid-30{
     display:inline-block;
     width:30%;
@@ -148,6 +154,9 @@ form{
 /*.div_question, */
 .purchase_item{
     position:relative;
+}
+.inline *{
+    display:inline-block;
 }
 #spec_container form{
     margin:auto;
@@ -191,7 +200,7 @@ form{
 	cursor:pointer;
 }
 
-.main_container select, .main_container input{
+.main_container select, input{
     /*position:absolute;
     right:0;
     bottom:0;*/
@@ -202,6 +211,10 @@ form{
     border:none;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
     text-align:center;
+}
+input[type=checkbox]{
+    width:auto;
+    height:auto;
 }
 button{
     display:block;
@@ -246,6 +259,11 @@ button{
     padding-bottom:2px;
     border-style:solid;
     border-width:0 0 1px 0;
+    border-color:#382B4C;
+}
+.right_line{
+    border-style:solid;
+    border-width:0 1px 0 0;
     border-color:#382B4C;
 }
 .left_border_2vw{
@@ -305,6 +323,7 @@ input[type=radio]:checked~label{
 /* Table */
 table{
     width:100%;
+    margin-top: 5px;
 }
 .col_mid_left{
     width:45%;
@@ -325,6 +344,9 @@ table td{
 }
 .text_right{
     text-align:right;
+}
+.text_center{
+    text-align:center;
 }
 #productA_spec_container{
     display:flex;    
@@ -386,6 +408,7 @@ table td{
     .content_tiny input:not(.star_info){
         font-size:20px;
     }
+    .content_small p:not(.star_info), 
     .content_small li:not(.star_info), 
     .content_small label:not(.star_info), 
     .content_small select:not(.star_info), 
