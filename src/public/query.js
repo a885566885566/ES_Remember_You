@@ -197,6 +197,16 @@ $(document).ready(function() {
         else
             $("#personal_info").hide()
     })
+    function getLuckyguyBlock(obj){
+        var block = $(`<div class="div_center content_tiny"></div>`)
+        var table = $(`<table></table>`)
+        var key = Object.keys(obj)
+        key.forEach((k)=>{
+            obj[k].forEach((prod)=>{
+                prod.ProductType
+            })
+        })
+    }
     $("#submit").click(()=>{
         const mode = $("#query_mode").val()
         var hid = "none"
