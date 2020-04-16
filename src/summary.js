@@ -17,6 +17,10 @@ function getProductList(obj){
     const orders = getOrderList(obj)
     orders.forEach((order)=>{
         order.Products.forEach((prod)=>{
+            prod["Paid"] = order.Paid
+            prod["Cashier"] = order.Cashier 
+            prod["BuyTime"] = order.BuyTime
+            prod["PaidTime"] = order.PaidTime 
             products.push(prod)
         })
     })
@@ -63,9 +67,39 @@ function getLuckyGuySummary(obj){
     var lucky = {}
     const products = getProductList(obj)
     products.forEach((prod)=>{
-        if(lucky[prod.DestName] === undefined)
-            lucky[prod.DestName] = []
-        lucky[prod.DestName].push(prod)
+        /* New luckyguy */
+        if(lucky[prod.DestName] === undefined){
+            var lucky_info = {
+                "Name": prod.DestName,
+                "Department": prod.Department,
+                "Contact": prod.Contact,
+                "CardId": prod.CardId,
+                "Products":[{
+                    "ProductType": prod.ProductType,
+                    "ProductSpec": prod.ProductSpec,
+                    "Paid": prod.Paid,
+                    "PaidTime": prod.PaidTime,
+                    "Cashier": prod.Cashier,
+                    "BuyTime": prod.BuyTime
+                }]
+            }
+            lucky[prod.DestName] = lucky_info 
+        }
+        /* Already exist */
+        else{
+            lucky[prod.DestName].Products.push({
+                "ProductType": prod.ProductType,
+                "ProductSpec": prod.ProductSpec,
+                "Paid": prod.Paid,
+                "PaidTime": prod.PaidTime,
+                "Cashier": prod.Cashier,
+                "BuyTime": prod.BuyTime
+            })
+            /* Check personal info */
+            if(lucky[prod.DestName].Department != prod.Department){
+                lucky[prod.DestName].error = prod 
+            }
+        }
     })
     return lucky 
 }

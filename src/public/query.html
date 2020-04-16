@@ -22,15 +22,22 @@
                     <option value="luckyguy">幸福的孩子查詢</option>
                 </select>
 
-                <div id=personal_info>
-                <div>
-                    <label for="sid">學號</label>
-                    <input class="abs_right" type="text "id="sid" placeholder="輸入學號"></input>
+                <div id="personal_info">
+                    <div>
+                        <label for="sid">學號</label>
+                        <input class="abs_right" type="text "id="sid" placeholder="輸入學號"></input>
+                    </div>
+                    <div>
+                        <label for="uname">姓名</label>
+                        <input class="abs_right" type="text" id="uname" placeholder="輸入姓名"></input>
+                    </div>
                 </div>
-                <div>
-                    <label for="uname">姓名</label>
-                    <input class="abs_right" type="text" id="uname" placeholder="輸入姓名"></input>
-                </div>
+                <div id="luckyguy_cond">
+                    <select id="luckyguy_sel">
+                        <option value="all">All</option>
+                        <option value="paid">Paid</option>
+                        <option value="unpaid">Not paid</option>
+                    </select>
                 </div>
                 <button id="submit">查詢</button>
             </form>

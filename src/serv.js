@@ -126,7 +126,7 @@ app.get("/query", (req, res)=>{
     const sid = req.session.uname
     const mode = req.query.mode
 
-    var msg = `Query request from ${hid}`
+    var msg = `Query request from ${hid} by ${sid}`
     var result = {}
 
     /* check permission */
@@ -144,7 +144,7 @@ app.get("/query", (req, res)=>{
     else                    result["status"] = "normal"
 
     if(mode == "personal"){
-        if((orderObj[hid] == buyid) | (sid !== undefined))
+        if((orderObj[hid] !== undefined) & (sid !== undefined))
         //if( orderObj[hid] == buyid )
             result["query"] = orderObj[hid]
         else

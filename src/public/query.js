@@ -2,6 +2,7 @@
 var orderData = {}
 
 $(document).ready(function() {    
+    $("#luckyguy_sel").hide()
     var productObj = {}
     $.getJSON("./initial", (data)=>{
         productObj = data
@@ -196,16 +197,56 @@ $(document).ready(function() {
             $("#personal_info").show()
         else
             $("#personal_info").hide()
+        
+        if( $("#query_mode").val() == "luckyguy" )
+            $("#luckyguy_sel").show()
+        else
+            $("#luckyguy_sel").hide()
     })
     function getLuckyguyBlock(obj){
-        var block = $(`<div class="div_center content_tiny"></div>`)
-        var table = $(`<table></table>`)
+        const mode = $("#luckyguy_sel").val()
+        var block = $(`<div class="narrow div_center content_tiny"></div>`)
         var key = Object.keys(obj)
+        console.log(key)
+
         key.forEach((k)=>{
-            obj[k].forEach((prod)=>{
-                prod.ProductType
+            var prodCount = 0
+            var luckyguy = obj[k]
+            
+            var specBlock = $(`<table></table>`)
+            luckyguy.Products.forEach((prod)=>{
+                if (mode=="all" | (mode=="paid" & prod.Paid==true) | (mode=="unpaid" & prod.Paid==false)){
+                    var specRow = $(`<tr></tr>`)
+                        .append( $(`<td class="col_slim"></td>`).text( productObj[prod.ProductType].name) )
+                    var specCol = $(`<td class="col_slim"></td>`)
+                    prod.ProductSpec.forEach((spec, idx)=>{
+                        if( idx<prod.ProductSpec.length-1 )
+                            specCol.append( $(`<p></p>`).text(spec) )
+                        else{
+                            specRow.append( specCol )
+                                .append( $(`<td></td>`).text(spec) )
+                        }
+                    })
+                    specBlock.append(specRow)
+                    prodCount += 1
+                }
             })
+
+            var personBlock = $(`<div class="fat_border border_round border_blue"></div>`)
+                .append( $(`<div></div>`)
+                    .append( $(`<table class="simple text_center"></table>`)
+                        .append( $(`<tr></tr>`)
+                            .append( $(`<td></td>`).text(luckyguy.Department) )
+                            .append( $(`<td></td>`).text(luckyguy.Name) )
+                            .append( $(`<td></td>`).text(luckyguy.CardId) ) )
+                        .append( $(`<tr></tr>`)
+                            .append( $(`<td colspan="5"></td>`).text(luckyguy.Contact) ))))
+                .append( $(`<p></p>`).text("購買清單") )
+                .append( $( specBlock) )
+            if( prodCount>0)
+                block.append(personBlock)
         })
+        return block
     }
     $("#submit").click(()=>{
         const mode = $("#query_mode").val()
@@ -219,13 +260,13 @@ $(document).ready(function() {
         }
         $.get(`/query?hid=${hid}&mode=${mode}`).done((result)=>{
             console.log(result)
-            if(result.status === "Permission deny"){
+            if(result.status == "Permission deny"){
                 alert("請先登入!")
                 $(location).attr("href", "./login.html")
             }
-            else if(result.status !== "failed"){
+            else if(result.status != "failed"){
                 var valid = false
-                if(result.status === "login") valid = true
+                if(result.status == "login") valid = true
                 if(mode == "personal"){
                     var summary_block = genOrdersBlock(result.query, hid, valid)
                     orderData = result.query
@@ -235,6 +276,8 @@ $(document).ready(function() {
                     var summary_block = getSpecSummaryBlock(result.query)
                 else if(mode == "buyer")
                     var summary_block = getBuyerSummaryBlock(result.query)
+                else if(mode == "luckyguy")
+                    var summary_block = getLuckyguyBlock(result.query)
                 console.log(result.query)
 
                 $("#query_result").empty()
