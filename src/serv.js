@@ -12,6 +12,8 @@ const session = require('express-session');
 //const crypto = require('crypto')
 
 const logger = require('./logger.js')
+var paidLogger = require('./paidLogger.js')
+
 var orderObj = logger.getOrderObj
 var visitedObj = logger.getVisitObj
 const keyObj = logger.getKeyObj
@@ -156,6 +158,8 @@ app.get("/query", (req, res)=>{
         result["query"] = order_summary.getBuyerSummary(orderObj)
     else if(mode == "luckyguy")
         result["query"] = order_summary.getLuckyGuySummary(orderObj)
+    else if(mode == "incomeSummary")
+        result["query"] = paidLogger.getPaidSummary 
     
     res.send(result)
 
@@ -243,6 +247,10 @@ app.get("/paid_request", (req, res)=>{
                 else
                     console.log("Discount id error")
 
+                paidLogger.insertLog({
+                    "Name":orderObj[hid].Name,
+                    "Sid":orderObj[hid].Sid}, orderObj[hid].OrderInfo[idx])
+                paidLogger.savePaidLog()
                 response.status = "status_updated"
             }
             else

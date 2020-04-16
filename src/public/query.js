@@ -54,7 +54,7 @@ $(document).ready(function() {
                 .append($(`<div><label>系級</label></div>`)
                     .append($(`<p class="abs_right"></p>`).text(product["Department"])))
                 .append($(`<div><label>fb連結</label></div>`)
-                    .append($(`<p class="abs_right"></p>`).text(product["Contact"])))
+                    .append($(`<a class="abs_right"></a>`).attr("href", product["Contact"])))
 
             //block.append(receiver_block)
             product_block.append(block)
@@ -125,7 +125,11 @@ $(document).ready(function() {
                 $(btn).click((e)=>{
                     const paid_id = $(e.target).attr("value")
                     const special = "#ch_"+paid_id
-                    $.get(`/paid_request?id=${paid_id}&hid=${hid}&special=${paid_id}`, (data)=>{
+                    if( $(special).prop("checked")==true )
+                        special_id = paid_id
+                    else
+                        special_id = "none"
+                    $.get(`/paid_request?id=${paid_id}&hid=${hid}&special=${special_id}`, (data)=>{
                         console.log(data)
                         $(e.target).hide()
                         $("#submit").trigger('click')
@@ -180,14 +184,17 @@ $(document).ready(function() {
     }
 
     function getBuyerSummaryBlock(obj){
+        const mode = $("#luckyguy_sel").val()
         var block = $(`<div class="div_center content_tiny"></div>`)
         var table = $(`<table></table>`)
         obj.forEach((buyer)=>{
-            var line = $(`<tr></tr>`)
-                .append($(`<td></td>`).text(buyer.Name))
-                .append($(`<td></td>`).text(buyer.Sid + "\n" + buyer.Phone))
-                .append($(`<td></td>`).text(buyer.Email + "\n" + buyer.FB))
-            table.append(line)
+                var line = $(`<tr></tr>`)
+                    .append($(`<td></td>`).text(buyer.Name))
+                    .append($(`<td></td>`).text(buyer.Sid + "\n" + buyer.Phone))
+                    .append($(`<td></td>`)
+                        .append( $(`<div></div>`).text(buyer.Email) )
+                        .append( $(`<a>FB連結</a>`).attr("href", buyer.FB)))
+                table.append(line)
         })
         block.append(table)
         return block
@@ -238,15 +245,96 @@ $(document).ready(function() {
                         .append( $(`<tr></tr>`)
                             .append( $(`<td></td>`).text(luckyguy.Department) )
                             .append( $(`<td></td>`).text(luckyguy.Name) )
-                            .append( $(`<td></td>`).text(luckyguy.CardId) ) )
-                        .append( $(`<tr></tr>`)
-                            .append( $(`<td colspan="5"></td>`).text(luckyguy.Contact) ))))
+                            .append( $(`<td></td>`).append( $(`<a>FB連結</a>`).attr("href",luckyguy.Name) ) )
+                            .append( $(`<td></td>`).text("編號:" + ("000"+luckyguy.CardId).slice(-4)) ) ) ) )
                 .append( $(`<p></p>`).text("購買清單") )
                 .append( $( specBlock) )
             if( prodCount>0)
                 block.append(personBlock)
         })
         return block
+    }
+    function getIncomeBlock(obj){
+        var block = $(`<div class="narrow div_center content_tiny"></div>`)
+        const key = Object.keys(obj)
+        key.forEach((k)=>{
+            var container = $(`<div class="fat_border border_round border_blue"></div>`)
+                .append( $(`<p></p>`).text(k) )
+            var table = $(`<table></table>`)
+                .append( $(`<tr>
+                    <th>學號</th>
+                    <th>購買人</th>
+                    <th>總額</th>
+                    <th>實收</th>
+                    <th>收款人</th>
+                    <th>繳費時間</th>
+                    <th>折價券</th>
+                    </tr>`) )
+            const discountPrice = 10
+            var discountCounter = 0
+            var totalPrice = 0
+            var cashier = {}
+            obj[k].forEach((paidOrder)=>{
+                const useDiscount = (paidOrder.Discount !== undefined) & (paidOrder.Discount != "none")
+                console.log(paidOrder)
+                console.log(paidOrder.Discount)
+                console.log(useDiscount)
+                const realPrice = useDiscount?paidOrder.Price-10:paidOrder.Price
+                table.append( $(`<tr></tr>`)
+                    .append( $(`<td></td>`).text(paidOrder.Sid) )
+                    .append( $(`<td></td>`).text(paidOrder.Buyer) )
+                    .append( $(`<td></td>`).text(paidOrder.Price) )
+                    .append( $(`<td></td>`).text(realPrice) )
+                    .append( $(`<td></td>`).text(paidOrder.Cashier) )
+                    .append( $(`<td></td>`).text(new Date(paidOrder.PaidTime).toLocaleDateString() 
+                        + new Date(paidOrder.PaidTime).toLocaleTimeString()) )
+                    .append( $(`<td></td>`).text( useDiscount?"yes":"no" ) ))
+                
+                if( cashier[paidOrder.Cashier] === undefined ){
+                    cashier[paidOrder.Cashier] = {}
+                    cashier[paidOrder.Cashier].Price = 0
+                    cashier[paidOrder.Cashier].Discount = 0
+                }
+                cashier[paidOrder.Cashier].Price += paidOrder.Price 
+                cashier[paidOrder.Cashier].Discount += useDiscount ? 1 : 0 
+
+                totalPrice += paidOrder.Price
+                discountCounter += useDiscount ? 1 : 0
+            })
+   
+            container.append(table)
+            container.append( $(`<div>收款人總表</div>`) )
+            var cashierBlock = $( `<table><tr>
+                <th>收款人</th>
+                <th>總金額</th>
+                <th>應收額</th>
+                <th>折價券</th>
+                </tr></table>` )
+            const cashierKey = Object.keys(cashier)
+            cashierKey.forEach((k)=>{
+                cashierBlock.append( $(`<tr></tr>`)
+                    .append( $(`<td></td>`).text(k) )
+                    .append( $(`<td></td>`).text(cashier[k].Price) )
+                    .append( $(`<td></td>`).text(cashier[k].Price - discountPrice*cashier[k].Discount) )
+                    .append( $(`<td></td>`).text(cashier[k].Discount) ))
+                
+            })
+            container.append(cashierBlock)
+                .append( $(`<div>該時段總表</div>`))
+                .append( $(`<table></table>`)
+                    .append( $(`<tr>
+                        <th>總金額</th>
+                        <th>應收額</th>
+                        <th>折價券</th>
+                        </tr>`) )
+                    .append( $(`<tr></tr>`)
+                        .append( $(`<td></td>`).text(totalPrice) )
+                        .append( $(`<td></td>`).text(totalPrice - discountPrice * discountCounter) )
+                        .append( $(`<td></td>`).text(discountCounter))))
+
+            block.append(container)
+        })
+        return block 
     }
     $("#submit").click(()=>{
         const mode = $("#query_mode").val()
@@ -278,6 +366,8 @@ $(document).ready(function() {
                     var summary_block = getBuyerSummaryBlock(result.query)
                 else if(mode == "luckyguy")
                     var summary_block = getLuckyguyBlock(result.query)
+                else if(mode == "incomeSummary")
+                    var summary_block = getIncomeBlock(result.query)
                 console.log(result.query)
 
                 $("#query_result").empty()
