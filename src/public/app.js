@@ -188,11 +188,11 @@ $(document).ready(function(){
         })
 
         /* discount rule */
-        if( totalPrice > 550 ) totalPrice -= 50
-        else if( totalPrice > 440 ) totalPrice -= 40
-        else if( totalPrice > 330 ) totalPrice -= 30
-        else if( totalPrice > 220 ) totalPrice -= 20
-        else if(totalPrice > 150 ) totalPrice -= 10
+        if( totalPrice >= 550 ) totalPrice -= 50
+        else if( totalPrice >= 440 ) totalPrice -= 40
+        else if( totalPrice >= 330 ) totalPrice -= 30
+        else if( totalPrice >= 220 ) totalPrice -= 20
+        else if(totalPrice >= 150 ) totalPrice -= 10
 
         $("#price_tag").text(totalPrice)
         return totalPrice

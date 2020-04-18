@@ -73,13 +73,13 @@ function getLuckyGuySummary(obj){
                 "Name": prod.DestName,
                 "Department": prod.Department,
                 "Contact": prod.Contact,
-                "CardId": prod.CardId,
                 "Products":[{
                     "ProductType": prod.ProductType,
                     "ProductSpec": prod.ProductSpec,
                     "Paid": prod.Paid,
                     "PaidTime": prod.PaidTime,
                     "Cashier": prod.Cashier,
+                    "CardId": prod.CardId,
                     "BuyTime": prod.BuyTime
                 }]
             }
@@ -93,6 +93,7 @@ function getLuckyGuySummary(obj){
                 "Paid": prod.Paid,
                 "PaidTime": prod.PaidTime,
                 "Cashier": prod.Cashier,
+                "CardId": prod.CardId,
                 "BuyTime": prod.BuyTime
             })
             /* Check personal info */
@@ -108,12 +109,20 @@ function getBuyerSummary(obj){
     const hids = Object.keys(obj)
     hids.forEach((hid)=>{
         const buyer = obj[hid]
+        var unPaidCount = 0
+        var paidCount = 0
+        buyer.OrderInfo.forEach((order)=>{
+            if( !order.Paid ) unPaidCount += 1
+            if( order.Paid )  paidCount += 1
+        })
         buyers.push({
             "Name":buyer.Name,
             "Sid":buyer.Sid,
             "FB":buyer.FB,
             "Phone":buyer.Phone,
-            "Email":buyer.Email
+            "Email":buyer.Email,
+            "Paid":paidCount,
+            "UnPaid":unPaidCount 
         })
     })
     return buyers 

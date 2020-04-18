@@ -186,15 +186,24 @@ $(document).ready(function() {
     function getBuyerSummaryBlock(obj){
         const mode = $("#luckyguy_sel").val()
         var block = $(`<div class="div_center content_tiny"></div>`)
-        var table = $(`<table></table>`)
+        var table = $(`<table><tr>
+            <th>姓名</th>
+            <th>付/未</th>
+            <th>學號/手機</th>
+            <th>信箱/FB</th>
+            </tr></table>`)
         obj.forEach((buyer)=>{
+            const paidInfo = buyer.Paid.toString() + " / " + buyer.UnPaid.toString()
+            if (mode=="all" | (mode=="paid" & buyer.Paid>0) | (mode=="unpaid" & buyer.UnPaid>0)){
                 var line = $(`<tr></tr>`)
                     .append($(`<td></td>`).text(buyer.Name))
+                    .append($(`<td></td>`).text(paidInfo))
                     .append($(`<td></td>`).text(buyer.Sid + "\n" + buyer.Phone))
                     .append($(`<td></td>`)
                         .append( $(`<div></div>`).text(buyer.Email) )
                         .append( $(`<a>FB連結</a>`).attr("href", buyer.FB)))
                 table.append(line)
+            }
         })
         block.append(table)
         return block
@@ -205,7 +214,7 @@ $(document).ready(function() {
         else
             $("#personal_info").hide()
         
-        if( $("#query_mode").val() == "luckyguy" )
+        if( $("#query_mode").val() == "luckyguy" || $("#query_mode").val() == "buyer")
             $("#luckyguy_sel").show()
         else
             $("#luckyguy_sel").hide()
@@ -221,10 +230,16 @@ $(document).ready(function() {
             var luckyguy = obj[k]
             
             var specBlock = $(`<table></table>`)
+                .append( $(`<tr><th>商品名稱</th>
+                            <th>編號</th>
+                            <th>商品規格</th>
+                            <th>加購貼紙</th>
+                    </tr>`) )
             luckyguy.Products.forEach((prod)=>{
                 if (mode=="all" | (mode=="paid" & prod.Paid==true) | (mode=="unpaid" & prod.Paid==false)){
                     var specRow = $(`<tr></tr>`)
                         .append( $(`<td class="col_slim"></td>`).text( productObj[prod.ProductType].name) )
+                        .append( $(`<td></td>`).text(("000"+prod.CardId).slice(-4)) )
                     var specCol = $(`<td class="col_slim"></td>`)
                     prod.ProductSpec.forEach((spec, idx)=>{
                         if( idx<prod.ProductSpec.length-1 )
@@ -245,9 +260,8 @@ $(document).ready(function() {
                         .append( $(`<tr></tr>`)
                             .append( $(`<td></td>`).text(luckyguy.Department) )
                             .append( $(`<td></td>`).text(luckyguy.Name) )
-                            .append( $(`<td></td>`).append( $(`<a>FB連結</a>`).attr("href",luckyguy.Name) ) )
-                            .append( $(`<td></td>`).text("編號:" + ("000"+luckyguy.CardId).slice(-4)) ) ) ) )
-                .append( $(`<p></p>`).text("購買清單") )
+                            .append( $(`<td></td>`).append( $(`<a>FB連結</a>`).attr("href",luckyguy.Name) ) ) ) ) )
+                //.append( $(`<p></p>`).text("購買清單") )
                 .append( $( specBlock) )
             if( prodCount>0)
                 block.append(personBlock)

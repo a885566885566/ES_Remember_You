@@ -13,6 +13,7 @@ const session = require('express-session');
 
 const logger = require('./logger.js')
 var paidLogger = require('./paidLogger.js')
+const utils = require('./utils.js')
 
 var orderObj = logger.getOrderObj
 var visitedObj = logger.getVisitObj
@@ -33,43 +34,6 @@ app.use(session({
 }));
 
 app.use(express.static(__dirname + '/public'))
-
-
-function getInputValue(value){
-    if( value === undefined ||
-        value == null ||
-        value.length <= 0 ||
-        value.indexOf('\"') >= 0 ||
-        value.indexOf('\'') >= 0 ||
-        value.indexOf('<') >= 0 ||
-        value.indexOf('>') >= 0 ||
-        value.indexOf('(') >= 0 ||
-        value.indexOf(')') >= 0 ||
-        value.indexOf(' ') >= 0 ||
-        value.indexOf(',') >= 0){
-        return false
-    }
-    return value
-}
-
-function calculatePrice(products){
-    var totalPrice = 0
-    products.forEach((product)=>{
-        var product_type = product["ProductType"]
-        totalPrice += productObj[product_type].price
-        if(product.ProductSpec.indexOf("不加購") < 0)
-            totalPrice += productObj.productD.price
-    })
-
-    /* discount rule */
-    if( totalPrice > 550 ) totalPrice -= 50
-    else if( totalPrice > 440 ) totalPrice -= 40
-    else if( totalPrice > 330 ) totalPrice -= 30
-    else if( totalPrice > 220 ) totalPrice -= 20
-    else if(totalPrice > 150 ) totalPrice -= 10
-
-    return totalPrice
-}
 
 app.get("/initial", (req, res)=>{
     if( req.session.uname !== undefined )
@@ -93,7 +57,7 @@ app.get("/order", (req, res)=>{
             new_order.OrderInfo[0].Products[idx]["CardId"] = visitedObj["CardId"]
             visitedObj["CardId"] += 1
         })
-        var price = calculatePrice(new_order.OrderInfo[0].Products)
+        var price = utils.calculatePrice(new_order.OrderInfo[0].Products, productObj)
         /* Save result */
         /* Check if the price is currect */
         const orderInfo = new_order.OrderInfo[0]
@@ -169,9 +133,9 @@ app.get("/query", (req, res)=>{
 })
 
 function checkAccount(uname, pswd){
-    if( getInputValue(uname) !== false &&
+    if( utils.getInputValue(uname) !== false &&
         keyObj.account[uname] !== undefined && 
-        getInputValue(pswd) !== false &&
+        utils.getInputValue(pswd) !== false &&
         keyObj.account[uname] === pswd){
         return true
     }

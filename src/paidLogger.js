@@ -54,13 +54,6 @@ function createPaidLog(obj){
     })
     savePaidLog()
 }
-
-
-var logger = require("./logger.js")
-var orderObj = logger.getOrderObj 
-createPaidLog(orderObj)
-console.log(paidLog)
-
 module.exports.insertLog = insertLog 
 module.exports.getPaidSummary = paidLog
 module.exports.savePaidLog = savePaidLog
