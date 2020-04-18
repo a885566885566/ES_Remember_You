@@ -1,30 +1,39 @@
 
 function CreatePaidLogger(){
-    const paidLogger = require('./paidLogger.js')
-    const logger = require("./logger.js")
-    var orderObj = logger.getOrderObj 
-    paidLogger.createPaidLog(orderObj)
-    console.log(paidLog)
+    try{
+        const paidLogger = require('./paidLogger.js')
+        const logger = require("./logger.js")
+        var orderObj = logger.getOrderObj 
+        paidLogger.createPaidLog(orderObj)
+    }
+    catch(e){
+        console.log(e)
+    }
 }
 
 function NumerateCardId(){
-    const logger = require('./logger.js')
-    var orderObj = logger.getOrderObj
-    var visitObj = logger.getVisitObj
+    try{
+        const logger = require('./logger.js')
+        var orderObj = logger.getOrderObj
+        var visitObj = logger.getVisitObj
 
-    var cardId = 0
-    const key = Object.keys(orderObj)
-    key.forEach((k)=>{
-        orderObj[k].OrderInfo.forEach((order, orderIdx)=>{
-            order.Products.forEach((prod, prodIdx)=>{
-                orderObj[k].OrderInfo[orderIdx].Products[prodIdx]["CardId"] = cardId
-                cardId += 1
+        var cardId = 0
+        const key = Object.keys(orderObj)
+        key.forEach((k)=>{
+            orderObj[k].OrderInfo.forEach((order, orderIdx)=>{
+                order.Products.forEach((prod, prodIdx)=>{
+                    orderObj[k].OrderInfo[orderIdx].Products[prodIdx]["CardId"] = cardId
+                    cardId += 1
+                })
             })
         })
-    })
-    visitObj["CardId"] = cardId
-    logger.saveLogFile(orderObj)
-    logger.saveVisitFile(visitObj)
+        visitObj["CardId"] = cardId
+        logger.saveLogFile(orderObj)
+        logger.saveVisitFile(visitObj)
+    }
+    catch(e){
+        console.log(e)
+    }
 }
 
 function recalculatePrice(){
@@ -43,3 +52,5 @@ function recalculatePrice(){
     logger.saveLogFile(orderObj)
 }
 recalculatePrice()
+CreatePaidLogger()
+NumerateCardId()

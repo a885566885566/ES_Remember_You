@@ -111,7 +111,7 @@ app.get("/query", (req, res)=>{
 
     if(mode == "personal"){
         if((orderObj[hid] !== undefined) & (sid !== undefined))
-        //if( orderObj[hid] == buyid )
+            //if( orderObj[hid] == buyid )
             result["query"] = orderObj[hid]
         else
             result["status"] = "failed"
@@ -124,7 +124,7 @@ app.get("/query", (req, res)=>{
         result["query"] = order_summary.getLuckyGuySummary(orderObj)
     else if(mode == "incomeSummary")
         result["query"] = paidLogger.getPaidSummary 
-    
+
     res.send(result)
 
     console.log(msg)
@@ -187,44 +187,49 @@ app.get("/login", (req, res)=>{
 })
 
 app.get("/paid_request", (req, res)=>{
-    var response = {}
-    const hid = req.query.hid
-    const prod_id = req.query.id
-    const special = req.query.special
-    if(req.session.uname === undefined){
-        response.status = "permission_deny"
-    }
-    else{
-        orderObj[hid].OrderInfo.forEach((prod, idx)=>{
-            //console.log(prod.BuyTime)
-            //console.log(prod_id)
-            //console.log(prod.Paid)
-            if((prod.BuyTime == prod_id) && (prod.Paid === false)){
-                orderObj[hid].OrderInfo[idx].Paid = true
-                orderObj[hid].OrderInfo[idx].PaidTime = new Date().getTime()
-                orderObj[hid].OrderInfo[idx].Cashier = req.session.uname
-                // Use discount
-                if(orderObj[hid].OrderInfo[idx].BuyTime == special){
-                    orderObj[hid].OrderInfo[idx].Discount = special
-                    console.log("Use discount")
+    try{
+        var response = {}
+        const hid = req.query.hid
+        const prod_id = req.query.id
+        const special = req.query.special
+        if(req.session.uname === undefined){
+            response.status = "permission_deny"
+        }
+        else{
+            orderObj[hid].OrderInfo.forEach((prod, idx)=>{
+                //console.log(prod.BuyTime)
+                //console.log(prod_id)
+                //console.log(prod.Paid)
+                if((prod.BuyTime == prod_id) && (prod.Paid === false)){
+                    orderObj[hid].OrderInfo[idx].Paid = true
+                    orderObj[hid].OrderInfo[idx].PaidTime = new Date().getTime()
+                    orderObj[hid].OrderInfo[idx].Cashier = req.session.uname
+                    // Use discount
+                    if(orderObj[hid].OrderInfo[idx].BuyTime == special){
+                        orderObj[hid].OrderInfo[idx].Discount = special
+                        console.log("Use discount")
+                    }
+                    else
+                        console.log("Discount id error")
+
+                    paidLogger.insertLog({
+                        "Name":orderObj[hid].Name,
+                        "Sid":orderObj[hid].Sid}, orderObj[hid].OrderInfo[idx])
+                    paidLogger.savePaidLog()
+                    response.status = "status_updated"
                 }
                 else
-                    console.log("Discount id error")
-
-                paidLogger.insertLog({
-                    "Name":orderObj[hid].Name,
-                    "Sid":orderObj[hid].Sid}, orderObj[hid].OrderInfo[idx])
-                paidLogger.savePaidLog()
-                response.status = "status_updated"
-            }
-            else
-                response.status = "info_error"
-        })
+                    response.status = "info_error"
+            })
+        }
+        visitedObj.Paid += 1
+        logger.saveLogFile(orderObj)
+        logger.saveOrderLog(`PAID_REQ: hid=${hid}, pid=${prod_id}, id=${req.session.uname} result=${response.status}`)
+        res.send(response)
     }
-    visitedObj.Paid += 1
-    logger.saveLogFile(orderObj)
-    logger.saveOrderLog(`PAID_REQ: hid=${hid}, pid=${prod_id}, id=${req.session.uname} result=${response.status}`)
-    res.send(response)
+    catch(e){
+        console.log(e)
+    }
 })
 console.log("Prepare done");
 app.listen(port)

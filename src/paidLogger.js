@@ -57,3 +57,4 @@ function createPaidLog(obj){
 module.exports.insertLog = insertLog 
 module.exports.getPaidSummary = paidLog
 module.exports.savePaidLog = savePaidLog
+module.exports.createPaidLog = createPaidLog
