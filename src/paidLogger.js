@@ -36,6 +36,7 @@ function insertLog(personInfo, order){
                     "Discount":order.Discount,
                     "Cashier":order.Cashier
                 })
+                break
             }
             idx += 1
         }

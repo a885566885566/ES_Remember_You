@@ -92,7 +92,7 @@ $(document).ready(function() {
             if( order["Paid"] == true ){
                 var paid_time = new Date(order["PaidTime"]).toLocaleString()
                 var paid_block = $(`
-                    <div class="highlight">
+                    <div class="highlight content_small">
                     <div><label>付款狀態</label>
                     <p class="state_great">已付款</p></div>
                     <div><label>付款時間</label>
@@ -200,7 +200,7 @@ $(document).ready(function() {
                     .append($(`<td></td>`).text(paidInfo))
                     .append($(`<td></td>`).text(buyer.Sid + "\n" + buyer.Phone))
                     .append($(`<td></td>`)
-                        .append( $(`<div></div>`).text(buyer.Email) )
+                        .append( $(`<p></p>`).text(buyer.Email) )
                         .append( $(`<a>FB連結</a>`).attr("href", buyer.FB)))
                 table.append(line)
             }

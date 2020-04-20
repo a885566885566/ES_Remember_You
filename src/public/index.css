@@ -71,21 +71,27 @@ table, tr, td{
 .content_medium label, .content_medium p{
     font-size:3vw;
 }*/
+.star_info{
+    font-size:3em;
+}
 .content_tiny p:not(.star_info), 
 .content_tiny td:not(.star_info), 
+.content_tiny th:not(.star_info), 
 .content_tiny li:not(.star_info), 
 .content_tiny label:not(.star_info), 
 .content_tiny select:not(.star_info), 
 .content_tiny option:not(.star_info), 
 .content_tiny input:not(.star_info){
-    font-size:2vw;
+    /*font-size:2vw;*/
+    font-size:0.7em;
 }
 .content_small li:not(.star_info), 
 .content_small label:not(.star_info), 
 .content_small select:not(.star_info), 
 .content_small option:not(.star_info), 
 .content_small input:not(.star_info){
-    font-size:3vw;
+    /*font-size:3vw;*/
+    font-size:1em;
 }
 .content_medium p, 
 .content_medium label, 
@@ -94,6 +100,7 @@ table, tr, td{
 .content_medium input,
 .star_info{
     font-size:4vw;
+    /*font-size:3em;*/
 }
 /*
 .div_question label, .div_question select, .div_question option, .div_question input{

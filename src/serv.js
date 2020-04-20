@@ -83,6 +83,12 @@ app.get("/order", (req, res)=>{
     catch(e){
         console.log(e)
         logger.saveOrderLog(`ERROR: hid=${req.query.id} order_json=${req.query.str}`)
+        var ip = (req.headers["x-forwarded-for"] || "").split(",").pop() ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket.remoteAddress
+        var html = "Do not try to hack me: " + ip
+        res.send(html)
     }
 })
 
