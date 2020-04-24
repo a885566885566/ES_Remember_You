@@ -98,7 +98,13 @@ function sendOne(len){
     if (count < len){
         buyer = buyerInfo[count]
         const content = getContent(buyer)
-        if(buyer.UnPaid > 0 && buyer.Sid == "E94066157"){
+        if(!buyer.Email.includes("@")){
+            // Error format
+            console.log("Error email format, " + buyer.Email)
+            count += 1
+            return 
+        }
+        if(buyer.UnPaid > 0){
             sendMsg(content, (err, inf, succeed)=>{
                 if(err)
                     console.log(`Sending emergency email error:\n ${err}, \n\n${inf}\n`); 

@@ -26,7 +26,7 @@ const order_summary = require('./summary.js')
 //app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({extended : false}));
 
-const port = 10418;
+const port = 11234;
 
 app.use(session({
     secret: keyObj.session_key, 

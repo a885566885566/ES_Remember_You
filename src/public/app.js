@@ -3,6 +3,7 @@ var productObj = {}
 $(document).ready(function(){
     $.getJSON("./initial", (data)=>{
     })
+    alert("目前商品「我電記」已經售罄!")
     var auto_show = {}
     function genProductMultiSpecBlock(productType, spec_id){
         var spec_block = $(`<form class="content_tiny"></form>`)

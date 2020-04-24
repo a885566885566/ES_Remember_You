@@ -260,7 +260,7 @@ $(document).ready(function() {
                         .append( $(`<tr></tr>`)
                             .append( $(`<td></td>`).text(luckyguy.Department) )
                             .append( $(`<td></td>`).text(luckyguy.Name) )
-                            .append( $(`<td></td>`).append( $(`<a>FB連結</a>`).attr("href",luckyguy.Name) ) ) ) ) )
+                            .append( $(`<td></td>`).append( $(`<a>FB連結</a>`).attr("href",luckyguy.Contact) ) ) ) ) )
                 //.append( $(`<p></p>`).text("購買清單") )
                 .append( $( specBlock) )
             if( prodCount>0)
