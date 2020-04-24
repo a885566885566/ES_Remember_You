@@ -42,7 +42,11 @@ function getSpecSummary(obj){
                     sp["name"] = spec.name
                     sp["detail"] = {}
                     spec.detail.forEach((del)=>{
-                        sp["detail"][del] = 0
+                        const spaceIdx = del.indexOf(" ")
+                        if ( spaceIdx > 0 ) del = del.substring(0, spaceIdx)
+                        sp["detail"][del] = {
+                            "Paid":0,
+                            "Total":0}
                     })
                     spec_list[prod].Spec.push(sp)
                 }
@@ -53,11 +57,19 @@ function getSpecSummary(obj){
     products.forEach((prod)=>{
         prod.ProductSpec.forEach((detail, idx)=>{
             if (idx == prod.ProductSpec.length-1){
-                if(detail != "不加購")
-                    spec_list["productD"].Spec[0].detail[detail] += 1
+                if(detail != "不加購"){
+                    spec_list["productD"].Spec[0].detail[detail].Total += 1
+                    if( prod.Paid ){
+                        spec_list["productD"].Spec[0].detail[detail].Paid += 1
+                    }
+                }
             }
-            else 
-                spec_list[prod.ProductType].Spec[idx].detail[detail] += 1
+            else{ 
+                spec_list[prod.ProductType].Spec[idx].detail[detail].Total += 1
+                if( prod.Paid ){
+                    spec_list[prod.ProductType].Spec[idx].detail[detail].Paid += 1
+                }
+            }
         })
     })
     return spec_list
