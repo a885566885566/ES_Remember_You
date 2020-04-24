@@ -159,6 +159,7 @@ $(document).ready(function() {
     }
 
     function getSpecSummaryBlock(obj){
+        const mode = $("#luckyguy_sel").val()
         var block = $(`<div class="div_center narrow content_small"></div>`)
         const prodId = Object.keys(obj)
         prodId.forEach((prod)=>{
@@ -167,13 +168,19 @@ $(document).ready(function() {
             obj[prod].Spec.forEach((spec)=>{
                 var specBlock = $(`<div class="left_border_2vw border_blue"></div>`)
                     .append($(`<p></p>`).text(spec.name))
-                var detail = $(`<div class="left_border_2vw border_blue"></div>`)
+                //var detail = $(`<div class="left_border_2vw border_blue"></div>`)
+                var detail = $(`<table class="left_border_2vw border_blue simple"></table>`)
                 var spec_key = Object.keys(spec.detail)
                 spec_key.forEach((key)=>{
-                    detail.append($(`<div class="content_tiny"></div>`)
-                        .append($(`<p class="col_right"></p>`).text(key))
-                        .append($(`<p class="col_left"></p>`).text(spec.detail[key])))
-                    .append($(`<div class="bottom_line"></div>`))
+                    console.log(key)
+                    console.log(spec.detail[key])
+                    detail.append($(`<tr class="bottom_line"></tr>`)
+                        .append($(`<td class="text_right"></td>`).text(key))
+                        .append($(`<td></td>`).text(spec.detail[key].Paid + "/" + spec.detail[key].Total)))
+                    //detail.append($(`<div class="content_tiny"></div>`)
+                    //    .append($(`<p class="col_right"></p>`).text(key))
+                    //    .append($(`<p class="col_left"></p>`).text(spec.detail[key].Paid + "/" + spec.detail[key].Total)))
+                    //.append($(`<div class="bottom_line"></div>`))
                 })
                 specBlock.append(detail)
                 prodBlock.append(specBlock)
@@ -214,7 +221,7 @@ $(document).ready(function() {
         else
             $("#personal_info").hide()
         
-        if( $("#query_mode").val() == "luckyguy" || $("#query_mode").val() == "buyer")
+        if( $("#query_mode").val() == "luckyguy" || $("#query_mode").val() == "buyer" || $("#query_mode").val() == "spec")
             $("#luckyguy_sel").show()
         else
             $("#luckyguy_sel").hide()

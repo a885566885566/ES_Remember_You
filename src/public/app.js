@@ -4,6 +4,7 @@ $(document).ready(function(){
     $.getJSON("./initial", (data)=>{
     })
     var auto_show = {}
+    window.location.replace("./eof.html")
     function genProductMultiSpecBlock(productType, spec_id){
         var spec_block = $(`<form class="content_tiny"></form>`)
         .attr('id', `${productType}_spec_container`)
